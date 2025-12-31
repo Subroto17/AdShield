@@ -1,4 +1,7 @@
-async function predict() {
+async function predict(event) {
+  // PREVENT AUTO-REFRESH / SUBMIT BEHAVIOUR
+  if (event) event.preventDefault();
+
   let text = document.getElementById("adText").value;
 
   if (!text.trim()) {
@@ -28,20 +31,17 @@ async function predict() {
     // Show result block
     document.getElementById("risk-section").style.display = "block";
 
-    // NEW CORRECT VALUES
-    let confidence = Math.floor(data.probability * 100); // %
-    let prediction = data.result; // fake / genuine
+    // CORRECT VALUES
+    let confidence = Math.floor(data.probability * 100);
+    let prediction = data.result;
 
-    // Set percentage text
+    // Set percentage
     document.getElementById("riskValue").innerText = confidence + "%";
 
-    // Circle element
+    // Risk circle
     let circle = document.getElementById("risk-circle");
-
-    // Reset old colors
     circle.classList.remove("meter-red", "meter-green");
 
-    // SIMPLE LOGIC
     if (prediction === "fake") {
       circle.classList.add("meter-red");
       document.getElementById("resultText").innerHTML =
@@ -52,16 +52,8 @@ async function predict() {
         "<span style='color:#1cc88a;'>GENUINE Advertisement</span>";
     }
 
-    // Highlight risky words
-    let riskyWords = [
-      "free",
-      "win",
-      "winner",
-      "money",
-      "earn",
-      "investment",
-      "guaranteed",
-    ];
+    // Highlight risky keywords
+    let riskyWords = ["free", "win", "winner", "money", "earn", "investment", "guaranteed"];
     let highlight = text;
 
     riskyWords.forEach((word) => {
@@ -72,12 +64,11 @@ async function predict() {
       );
     });
 
-    // Show highlighted text
     let out = document.getElementById("highlightOutput");
     out.style.display = "block";
     out.innerHTML = highlight;
 
-    // Clear textarea
+    // Clear input textarea
     document.getElementById("adText").value = "";
   } catch (err) {
     console.error("Error:", err);

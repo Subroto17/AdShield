@@ -5,5 +5,75 @@
         "probability": 0.8731039896483496,
         "category": "money",
         "timestamp": 1767180195
+    },
+    {
+        "text": "Admission",
+        "result": "genuine",
+        "probability": 0.7369276781970782,
+        "category": "general",
+        "timestamp": 1767183336
+    },
+    {
+        "text": "Earn",
+        "result": "fake",
+        "probability": 0.789616747514264,
+        "category": "money",
+        "timestamp": 1767183346
+    },
+    {
+        "text": "Buy electronics with discount up to 292%. Limited offer.",
+        "result": "genuine",
+        "probability": 0.8958640772870715,
+        "category": "shopping",
+        "timestamp": 1767183414
+    },
+    {
+        "text": "Urgent! Verify your bank account to avoid suspension. Click the link.",
+        "result": "fake",
+        "probability": 0.9532765176810452,
+        "category": "general",
+        "timestamp": 1767183779
+    },
+    {
+        "text": "Urgent! Verify your bank account to avoid suspension. Click the link.",
+        "result": "fake",
+        "probability": 0.9532765176810452,
+        "category": "general",
+        "timestamp": 1767184299
+    },
+    {
+        "text": "Urgent! Verify your bank account to avoid suspension. Click the link.",
+        "result": "fake",
+        "probability": 0.9532765176810452,
+        "category": "general",
+        "timestamp": 1767184304
+    },
+    {
+        "text": "Buy electronics with discount up to 292%. Limited offer.",
+        "result": "genuine",
+        "probability": 0.8958640772870715,
+        "category": "shopping",
+        "timestamp": 1767184658
+    },
+    {
+        "text": "Urgent! Verify your bank account to avoid suspension. Click the link.",
+        "result": "fake",
+        "probability": 0.9532765176810452,
+        "category": "general",
+        "timestamp": 1767184920
+    },
+    {
+        "text": "hello",
+        "result": "genuine",
+        "probability": 0.5052249162773765,
+        "category": "general",
+        "timestamp": 1767185057
+    },
+    {
+        "text": "Sorry",
+        "result": "genuine",
+        "probability": 0.5052249162773765,
+        "category": "general",
+        "timestamp": 1767190101
     }
 ]

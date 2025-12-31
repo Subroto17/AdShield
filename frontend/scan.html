@@ -16,7 +16,7 @@
 
       <div class="nav-links">
         <a href="index.html">Home</a>
-        <a href="scan.html">Scan Ad</a>
+        <a href="scan.html" class="active">Scan Ad</a>
         <a href="dashboard.html">Dashboard</a>
         <a href="report.html">Report Scam</a>
         <a href="learn.html">Learn</a>
@@ -52,11 +52,12 @@
         placeholder="Paste advertisement text here..."
       ></textarea>
 
-      <!-- SCAN BUTTON -->
+      <!-- SCAN BUTTON (FIXED) -->
       <button
+        type="button"
         class="btn-primary"
         style="margin-top: 20px; width: 100%"
-        onclick="predict()"
+        onclick="predict(event)"
       >
         Analyze
       </button>
@@ -103,10 +104,11 @@
     <!-- FOOTER -->
     <footer>© 2025 AdShield AI — Fake Advertisement Detection System</footer>
 
-    <script src="assets/js/script.js"></script>
+    <script src="assets/js/script.js?v=999"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
       AOS.init();
     </script>
+    
   </body>
 </html>
