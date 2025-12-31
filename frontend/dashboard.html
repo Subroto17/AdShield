@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - AdShield AI</title>
+
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <!-- NAVBAR -->
+    <div class="navbar">
+      <a href="index.html" class="logo"><b>AdShield AI</b></a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="scan.html">Scan Ad</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="report.html">Report Scam</a>
+        <a href="learn.html">Learn</a>
+        <a href="admin.html">Admin</a>
+      </div>
+    </div>
+
+    <!-- DASHBOARD CONTAINER -->
+    <div
+      style="max-width: 1200px; margin: 40px auto; padding: 0 20px"
+      data-aos="fade-up"
+    >
+      <h2 style="text-align: center">Analytics Dashboard</h2>
+      <p
+        style="
+          text-align: center;
+          color: var(--text-light);
+          margin-bottom: 40px;
+        "
+      >
+        Real-time statistics from all scanned advertisements.
+      </p>
+
+      <!-- TOP CARDS -->
+      <div
+        id="cards-row"
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 25px;
+        "
+      >
+        <div class="card-soft">
+          <h3>📊 Total Ads Scanned</h3>
+          <p id="totalScans" class="dash-number">0</p>
+        </div>
+
+        <div class="card-soft">
+          <h3>⚠️ Fake Ads</h3>
+          <p id="fakeCount" class="dash-number" style="color: #ef4444">0</p>
+        </div>
+
+        <div class="card-soft">
+          <h3>🟢 Genuine Ads</h3>
+          <p id="genuineCount" class="dash-number" style="color: #10b981">0</p>
+        </div>
+
+        <div class="card-soft">
+          <h3>🔥 Top Scam Category</h3>
+          <p id="topCategory" class="dash-number">-</p>
+        </div>
+      </div>
+
+      <!-- CHARTS SECTION -->
+      <div
+        style="
+          margin-top: 60px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 35px;
+        "
+      >
+        <!-- LINE CHART -->
+        <div class="card-soft">
+          <h3 style="margin-bottom: 15px">Fake vs Genuine Over Time</h3>
+          <canvas id="timelineChart" height="130"></canvas>
+        </div>
+
+        <!-- BAR CHART -->
+        <div class="card-soft">
+          <h3 style="margin-bottom: 15px">Category-wise Scam Count</h3>
+          <canvas id="categoryChart" height="130"></canvas>
+        </div>
+      </div>
+
+      <!-- PIE CHART -->
+      <div style="margin-top: 40px">
+        <div class="card-soft">
+          <h3 style="margin-bottom: 15px">Fake vs Genuine Ratio</h3>
+          <canvas id="pieChart" height="120"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>© 2025 AdShield AI — Fake Advertisement Detection System</footer>
+
+    <script src="assets/js/script.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scan Advertisement - AdShield AI</title>
+
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <!-- NAVBAR -->
+    <div class="navbar">
+      <a href="index.html" class="logo"><b>AdShield AI</b></a>
+
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="scan.html">Scan Ad</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="report.html">Report Scam</a>
+        <a href="learn.html">Learn</a>
+        <a href="admin.html">Admin</a>
+      </div>
+    </div>
+
+    <!-- MAIN SCAN CONTAINER -->
+    <div
+      class="card-soft"
+      style="max-width: 900px; margin: 50px auto"
+      data-aos="fade-up"
+    >
+      <h2 style="text-align: center; margin-bottom: 15px">
+        Analyze Advertisement
+      </h2>
+
+      <p
+        style="
+          text-align: center;
+          color: var(--text-light);
+          margin-bottom: 30px;
+        "
+      >
+        Paste any advertisement text and let the AI detect if it's fake or
+        genuine.
+      </p>
+
+      <!-- INPUT TEXTAREA -->
+      <textarea
+        id="adText"
+        rows="5"
+        placeholder="Paste advertisement text here..."
+      ></textarea>
+
+      <!-- SCAN BUTTON -->
+      <button
+        class="btn-primary"
+        style="margin-top: 20px; width: 100%"
+        onclick="predict()"
+      >
+        Analyze
+      </button>
+
+      <!-- LOADER -->
+      <div id="loader" style="display: none; margin-top: 20px">
+        <div class="apple-bounce">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <p
+          style="text-align: center; margin-top: 10px; color: var(--text-light)"
+        >
+          Analyzing...
+        </p>
+      </div>
+
+      <!-- RESULTS SECTION -->
+      <div id="risk-section" style="display: none; margin-top: 40px">
+        <!-- RISK CIRCLE -->
+        <div class="meter-circle" id="risk-circle">
+          <span id="riskValue">0%</span>
+        </div>
+
+        <!-- TEXT RESULT -->
+        <h3 id="resultText" style="text-align: center; margin-top: 10px"></h3>
+
+        <!-- HIGHLIGHTED TEXT -->
+        <div
+          class="card-border"
+          id="highlightOutput"
+          style="
+            display: none;
+            margin-top: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+          "
+        ></div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>© 2025 AdShield AI — Fake Advertisement Detection System</footer>
+
+    <script src="assets/js/script.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
+  </body>
+</html>

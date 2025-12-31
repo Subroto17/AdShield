@@ -1,0 +1,334 @@
+/* ================================================================
+   GLOBAL MODERN SAAS THEME – Blue → Sky Blue Gradient
+================================================================ */
+
+:root {
+  --primary: #2563eb;
+  --secondary: #38bdf8;
+  --gradient: linear-gradient(135deg, #2563eb, #38bdf8);
+
+  --text-dark: #0f172a;
+  --text-light: #475569;
+  --bg-light: #f1f5f9;
+  --card-bg: #ffffff;
+  --border: #e2e8f0;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  background: #ffffff;
+  color: var(--text-dark);
+}
+
+/* ================================================================
+   NAVBAR
+================================================================ */
+
+.navbar {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 16px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.nav-links a {
+  text-decoration: none;
+  margin-left: 28px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-dark);
+  transition: 0.3s;
+}
+
+.nav-links a:hover {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ================================================================
+   HERO SECTION (Homepage)
+================================================================ */
+
+.hero {
+  width: 100%;
+  text-align: center;
+  padding: 120px 20px 110px;
+  background: var(--gradient);
+  color: white;
+  border-radius: 0 0 40px 40px;
+  position: relative;
+}
+
+.hero h1 {
+  font-size: 46px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  max-width: 680px;
+  margin: 0 auto;
+  font-size: 18px;
+  opacity: 0.95;
+  line-height: 1.6;
+}
+
+.cta-btn {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 14px 34px;
+  font-size: 17px;
+  font-weight: 700;
+  background: white;
+  color: var(--primary);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: 0.3s;
+}
+
+.cta-btn:hover {
+  transform: translateY(-4px);
+  background: #f8faff;
+}
+
+.hero-shape {
+  width: 330px;
+  height: 330px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  position: absolute;
+  bottom: -90px;
+  right: -80px;
+  filter: blur(40px);
+}
+
+/* ================================================================
+   FEATURE CARDS
+================================================================ */
+
+.features {
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  padding: 90px 20px;
+}
+
+.feature-card {
+  background: white;
+  width: 300px;
+  padding: 36px;
+  border-radius: var(--radius-lg);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  transition: 0.25s;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+
+.feature-card .icon {
+  font-size: 38px;
+  margin-bottom: 12px;
+}
+
+.feature-card h3 {
+  font-size: 21px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.feature-card p {
+  color: var(--text-light);
+  font-size: 16px;
+}
+
+/* ================================================================
+   GLOBAL CARDS (Scan, Dashboard, Report, Learn)
+================================================================ */
+
+.card-soft {
+  background: white;
+  padding: 26px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  margin: 25px 0;
+}
+
+.card-border {
+  background: white;
+  padding: 22px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+/* ================================================================
+   INPUTS & TEXTAREA
+================================================================ */
+
+textarea,
+input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  font-size: 15px;
+  outline: none;
+  resize: none;
+  background: #fff;
+  transition: 0.2s;
+}
+
+textarea:focus,
+input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+}
+
+/* ================================================================
+   BUTTONS
+================================================================ */
+
+.btn-primary {
+  background: var(--gradient);
+  border: none;
+  color: #fff;
+  padding: 12px 26px;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  opacity: 0.92;
+  transform: translateY(-2px);
+}
+
+/* ================================================================
+   RISK METER (Scan Page)
+================================================================ */
+
+.meter-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: var(--gradient);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 25px auto;
+  box-shadow: var(--shadow-lg);
+  transition: 0.3s;
+}
+
+.meter-circle span {
+  color: white;
+  font-size: 35px;
+  font-weight: 800;
+}
+
+.meter-red {
+  background: #ef4444 !important;
+}
+.meter-green {
+  background: #10b981 !important;
+}
+
+/* ================================================================
+   APPLE BOUNCE LOADER
+================================================================ */
+
+.apple-bounce {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 25px;
+}
+
+.apple-bounce div {
+  width: 12px;
+  height: 12px;
+  background: var(--gradient);
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate ease-in-out;
+}
+
+.apple-bounce div:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.apple-bounce div:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.apple-bounce div:nth-child(4) {
+  animation-delay: 0.45s;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateY(-16px);
+    opacity: 1;
+  }
+}
+
+/* ================================================================
+   FOOTER
+================================================================ */
+
+footer {
+  text-align: center;
+  padding: 40px 10px;
+  color: var(--text-light);
+  margin-top: 50px;
+  font-size: 15px;
+}
+
+/* ================================================================
+   RESPONSIVE DESIGN
+================================================================ */
+
+@media (max-width: 900px) {
+  .features {
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+  }
+
+  .hero h1 {
+    font-size: 34px;
+  }
+
+  .hero p {
+    font-size: 17px;
+  }
+}
