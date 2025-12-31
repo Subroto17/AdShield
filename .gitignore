@@ -1,0 +1,33 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+
+# Model training cache
+*.joblib
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# JSON database (local storage)
+scans.json
+
+# IDE folders
+.vscode/
+.idea/
+
+# Node modules (if future use)
+node_modules/
+
+# Temporary files
+*.tmp
+*.swp
