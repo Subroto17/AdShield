@@ -318,14 +318,5 @@ or use **Live Server** in VS Code.
 - Push notifications for trending scams
 - Auto ML re-training module
 
----
 
-# ⭐ 8. Developer
 
-**👨‍💻 Subroto Raj**  
-BBA / MCA Student — India  
-GitHub: [Subroto17](https://github.com/Subroto17)
-
----
-
-# ⭐ If you liked this project, don't forget to ★ Star the Repository!
