@@ -1,78 +1,114 @@
+// =======================
+// SCAN / PREDICT FUNCTION
+// =======================
 async function predict(event) {
-  // PREVENT AUTO-REFRESH / SUBMIT BEHAVIOUR
   if (event) event.preventDefault();
 
-  let text = document.getElementById("adText").value;
+  const textArea = document.getElementById("adText");
+  const text = textArea.value.trim();
 
-  if (!text.trim()) {
+  const loader = document.getElementById("loader");
+  const riskSection = document.getElementById("risk-section");
+  const highlightOutput = document.getElementById("highlightOutput");
+  const resultText = document.getElementById("resultText");
+  const riskValue = document.getElementById("riskValue");
+  const circle = document.getElementById("risk-circle");
+  const button = document.querySelector(".btn-primary");
+
+  // ---------- VALIDATION ----------
+  if (!text) {
     alert("Please enter advertisement text.");
     return;
   }
 
-  // Show loader
-  document.getElementById("loader").style.display = "flex";
+  // ---------- RESET UI (ONLY HERE) ----------
+  riskSection.style.display = "none";
+  highlightOutput.style.display = "none";
+  resultText.innerHTML = "";
+  circle.classList.remove("meter-red", "meter-green");
 
-  // Hide previous results
-  document.getElementById("highlightOutput").style.display = "none";
-  document.getElementById("risk-section").style.display = "none";
+  // ---------- LOCK UI ----------
+  loader.style.display = "flex";
+  button.disabled = true;
+  button.innerText = "Analyzing...";
 
   try {
-    let r = await fetch("http://127.0.0.1:5000/predict", {
+    const response = await fetch("http://127.0.0.1:5000/predict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: text }),
+      body: JSON.stringify({ text }),
     });
 
-    let data = await r.json();
+    if (!response.ok) {
+      throw new Error("Backend error");
+    }
 
-    // Hide loader
-    document.getElementById("loader").style.display = "none";
+    const data = await response.json();
 
-    // Show result block
-    document.getElementById("risk-section").style.display = "block";
+    // ---------- UNLOCK UI ----------
+    loader.style.display = "none";
+    button.disabled = false;
+    button.innerText = "Analyze";
 
-    // CORRECT VALUES
-    let confidence = Math.floor(data.probability * 100);
-    let prediction = data.result;
+    // ---------- PROCESS RESULT ----------
+    const confidence = Math.floor(data.probability * 100);
+    const prediction = data.result; // fake | genuine
 
-    // Set percentage
-    document.getElementById("riskValue").innerText = confidence + "%";
-
-    // Risk circle
-    let circle = document.getElementById("risk-circle");
-    circle.classList.remove("meter-red", "meter-green");
+    riskValue.innerText = confidence + "%";
 
     if (prediction === "fake") {
       circle.classList.add("meter-red");
-      document.getElementById("resultText").innerHTML =
+      resultText.innerHTML =
         "<span style='color:#e74a3b;'>FAKE Advertisement</span>";
     } else {
       circle.classList.add("meter-green");
-      document.getElementById("resultText").innerHTML =
+      resultText.innerHTML =
         "<span style='color:#1cc88a;'>GENUINE Advertisement</span>";
     }
 
-    // Highlight risky keywords
-    let riskyWords = ["free", "win", "winner", "money", "earn", "investment", "guaranteed"];
-    let highlight = text;
+    // ---------- HIGHLIGHT SUSPICIOUS WORDS ----------
+    const riskyWords = [
+      "free",
+      "win",
+      "winner",
+      "money",
+      "earn",
+      "investment",
+      "guaranteed",
+    ];
+
+    let highlightedText = text;
 
     riskyWords.forEach((word) => {
-      let reg = new RegExp(word, "gi");
-      highlight = highlight.replace(
-        reg,
+      const regex = new RegExp(word, "gi");
+      highlightedText = highlightedText.replace(
+        regex,
         `<span style="background:#ffdfdf;padding:3px;border-radius:4px;">${word}</span>`
       );
     });
 
-    let out = document.getElementById("highlightOutput");
-    out.style.display = "block";
-    out.innerHTML = highlight;
+    highlightOutput.innerHTML = highlightedText;
 
-    // Clear input textarea
-    document.getElementById("adText").value = "";
-  } catch (err) {
-    console.error("Error:", err);
-    alert("Something went wrong while scanning!");
-    document.getElementById("loader").style.display = "none";
+    // ---------- SHOW RESULT (PERMANENT) ----------
+    riskSection.style.display = "block";
+    highlightOutput.style.display = "block";
+
+    // ---------- CLEAR INPUT ----------
+    textArea.value = "";
+  } catch (error) {
+    console.error("Scan failed:", error);
+
+    loader.style.display = "none";
+    button.disabled = false;
+    button.innerText = "Analyze";
+
+    alert("Backend is not reachable. Please start the server.");
   }
+}
+
+// =======================
+// DASHBOARD AUTO LOAD
+// =======================
+if (window.location.pathname.includes("dashboard.html")) {
+  loadDashboard();
 }
