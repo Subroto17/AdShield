@@ -1,114 +1,226 @@
-// =======================
-// SCAN / PREDICT FUNCTION
-// =======================
-async function predict(event) {
-  if (event) event.preventDefault();
+const API_BASE = "http://127.0.0.1:5000";
 
+/* ================= SCAN PAGE ================= */
+
+async function predict() {
   const textArea = document.getElementById("adText");
   const text = textArea.value.trim();
 
-  const loader = document.getElementById("loader");
-  const riskSection = document.getElementById("risk-section");
-  const highlightOutput = document.getElementById("highlightOutput");
-  const resultText = document.getElementById("resultText");
-  const riskValue = document.getElementById("riskValue");
-  const circle = document.getElementById("risk-circle");
-  const button = document.querySelector(".btn-primary");
-
-  // ---------- VALIDATION ----------
   if (!text) {
     alert("Please enter advertisement text.");
     return;
   }
 
-  // ---------- RESET UI (ONLY HERE) ----------
-  riskSection.style.display = "none";
-  highlightOutput.style.display = "none";
-  resultText.innerHTML = "";
-  circle.classList.remove("meter-red", "meter-green");
-
-  // ---------- LOCK UI ----------
-  loader.style.display = "flex";
-  button.disabled = true;
-  button.innerText = "Analyzing...";
+  document.getElementById("loader").style.display = "block";
+  document.getElementById("risk-section").style.display = "none";
+  document.getElementById("highlightOutput").style.display = "none";
 
   try {
-    const response = await fetch("http://127.0.0.1:5000/predict", {
+    const res = await fetch(`${API_BASE}/predict`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text }),
     });
 
-    if (!response.ok) {
-      throw new Error("Backend error");
-    }
+    const data = await res.json();
 
-    const data = await response.json();
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("risk-section").style.display = "block";
 
-    // ---------- UNLOCK UI ----------
-    loader.style.display = "none";
-    button.disabled = false;
-    button.innerText = "Analyze";
+    const confidence = Math.round(data.probability * 100);
+    const circle = document.getElementById("risk-circle");
+    const resultText = document.getElementById("resultText");
 
-    // ---------- PROCESS RESULT ----------
-    const confidence = Math.floor(data.probability * 100);
-    const prediction = data.result; // fake | genuine
+    document.getElementById("riskValue").innerText = confidence + "%";
 
-    riskValue.innerText = confidence + "%";
+    circle.classList.remove("meter-red", "meter-green");
 
-    if (prediction === "fake") {
+    if (data.result === "fake") {
       circle.classList.add("meter-red");
-      resultText.innerHTML =
-        "<span style='color:#e74a3b;'>FAKE Advertisement</span>";
+      resultText.innerHTML = "<b style='color:#e74a3b'>FAKE Advertisement</b>";
     } else {
       circle.classList.add("meter-green");
       resultText.innerHTML =
-        "<span style='color:#1cc88a;'>GENUINE Advertisement</span>";
+        "<b style='color:#1cc88a'>GENUINE Advertisement</b>";
     }
 
-    // ---------- HIGHLIGHT SUSPICIOUS WORDS ----------
+    // Highlight risky words
     const riskyWords = [
-      "free",
-      "win",
-      "winner",
-      "money",
+      "lottery",
       "earn",
+      "money",
+      "profit",
       "investment",
       "guaranteed",
+      "free",
+      "quick cash",
     ];
 
-    let highlightedText = text;
-
+    let highlighted = text;
     riskyWords.forEach((word) => {
       const regex = new RegExp(word, "gi");
-      highlightedText = highlightedText.replace(
+      highlighted = highlighted.replace(
         regex,
-        `<span style="background:#ffdfdf;padding:3px;border-radius:4px;">${word}</span>`
+        `<span style="background:#ffe2e2;padding:3px;border-radius:4px">${word}</span>`
       );
     });
 
-    highlightOutput.innerHTML = highlightedText;
+    const output = document.getElementById("highlightOutput");
+    output.innerHTML = highlighted;
+    output.style.display = "block";
 
-    // ---------- SHOW RESULT (PERMANENT) ----------
-    riskSection.style.display = "block";
-    highlightOutput.style.display = "block";
-
-    // ---------- CLEAR INPUT ----------
+    // Clear textarea only AFTER success
     textArea.value = "";
-  } catch (error) {
-    console.error("Scan failed:", error);
-
-    loader.style.display = "none";
-    button.disabled = false;
-    button.innerText = "Analyze";
-
-    alert("Backend is not reachable. Please start the server.");
+  } catch (err) {
+    console.error(err);
+    document.getElementById("loader").style.display = "none";
+    alert("Backend not reachable. Start app.py");
   }
 }
 
-// =======================
-// DASHBOARD AUTO LOAD
-// =======================
+/* ================= DASHBOARD ================= */
+
+async function loadDashboard() {
+  await loadSummary();
+  await loadCategories();
+  await loadTimeline();
+  await loadRecentScans();
+}
+
+/* -------- SUMMARY -------- */
+async function loadSummary() {
+  const res = await fetch(`${API_BASE}/dashboard/summary`);
+  const data = await res.json();
+
+  document.getElementById("totalScans").innerText = data.total_scans;
+  document.getElementById("fakeCount").innerText = data.fake;
+  document.getElementById("genuineCount").innerText = data.genuine;
+  document.getElementById("topCategory").innerText =
+    data.top_category.toUpperCase();
+
+  const insight = document.getElementById("insightText");
+  if (data.fake > data.genuine) {
+    insight.innerText =
+      "⚠️ Alert: High number of fake advertisements detected. Most scams relate to " +
+      data.top_category.toUpperCase();
+  } else {
+    insight.innerText =
+      "✅ System Status: Majority of scanned advertisements appear genuine.";
+  }
+}
+
+/* -------- CATEGORY BAR -------- */
+let categoryChart;
+async function loadCategories() {
+  const res = await fetch(`${API_BASE}/dashboard/categories`);
+  const data = await res.json();
+
+  if (categoryChart) categoryChart.destroy();
+
+  categoryChart = new Chart(document.getElementById("categoryChart"), {
+    type: "bar",
+    data: {
+      labels: data.labels,
+      datasets: [
+        {
+          label: "Scam Count",
+          data: data.counts,
+          backgroundColor: "#4a6cf7",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+    },
+  });
+}
+
+/* -------- TIMELINE -------- */
+let timelineChart;
+async function loadTimeline() {
+  const res = await fetch(`${API_BASE}/dashboard/timeline`);
+  const data = await res.json();
+
+  if (timelineChart) timelineChart.destroy();
+
+  timelineChart = new Chart(document.getElementById("timelineChart"), {
+    type: "line",
+    data: {
+      labels: data.dates,
+      datasets: [
+        {
+          label: "Fake",
+          data: data.fake,
+          borderColor: "#e74a3b",
+          fill: false,
+          tension: 0.4,
+        },
+        {
+          label: "Genuine",
+          data: data.genuine,
+          borderColor: "#1cc88a",
+          fill: false,
+          tension: 0.4,
+        },
+      ],
+    },
+    options: { responsive: true },
+  });
+}
+
+/* -------- PIE -------- */
+let pieChart;
+async function loadPie() {
+  const res = await fetch(`${API_BASE}/dashboard/summary`);
+  const data = await res.json();
+
+  if (pieChart) pieChart.destroy();
+
+  pieChart = new Chart(document.getElementById("pieChart"), {
+    type: "pie",
+    data: {
+      labels: ["Fake", "Genuine"],
+      datasets: [
+        {
+          data: [data.fake, data.genuine],
+          backgroundColor: ["#e74a3b", "#1cc88a"],
+        },
+      ],
+    },
+  });
+}
+
+/* -------- RECENT SCANS -------- */
+async function loadRecentScans() {
+  const res = await fetch(`${API_BASE}/dashboard/recent`);
+  const scans = await res.json();
+
+  const tbody = document.getElementById("recentScans");
+  tbody.innerHTML = "";
+
+  if (scans.length === 0) {
+    tbody.innerHTML = "<tr><td colspan='4'>No scans yet</td></tr>";
+    return;
+  }
+
+  scans.forEach((s) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${s.text}</td>
+      <td style="color:${s.result === "fake" ? "#e74a3b" : "#1cc88a"}">
+        ${s.result.toUpperCase()}
+      </td>
+      <td>${s.category}</td>
+      <td>${s.time}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+/* -------- AUTO LOAD -------- */
 if (window.location.pathname.includes("dashboard.html")) {
   loadDashboard();
+  loadPie();
+  setInterval(loadDashboard, 15000); // auto refresh every 15 sec
 }

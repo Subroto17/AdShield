@@ -1,9 +1,51 @@
 [
-    {
-        "text": "Buy 700 rupees lottery and earn 9000000000000",
-        "result": "fake",
-        "category": "money",
-        "probability": 0.85,
-        "timestamp": 1767696293
-    }
+  {
+    "text": "Buy 700 rupees lottery and earn 9000000000000",
+    "result": "fake",
+    "category": "money",
+    "probability": 0.85,
+    "timestamp": 1767696293
+  },
+  {
+    "text": "Buy 700 rupees lottery and earn 9000000000000",
+    "result": "fake",
+    "probability": 0.5938351773678922,
+    "category": "money",
+    "timestamp": 1767717357
+  },
+  {
+    "text": "It is fake",
+    "result": "fake",
+    "probability": 0.5115876845143187,
+    "category": "general",
+    "timestamp": 1767717370
+  },
+  {
+    "text": "\"Buy 700 rupees lottery and earn 9000000000000\",fake\n\"Pay 500 and win 5 crore lottery guaranteed\",fake\n\"Earn 1 lakh per day by investing 100\",fake\n\"Lottery scheme earn crores instantly\",fake\n\"Pay registration fee and get lottery money\",fake\n\"Guaranteed income from lottery investment\",fake",
+    "result": "fake",
+    "probability": 0.9,
+    "category": "money",
+    "timestamp": 1767718429
+  },
+  {
+    "text": "Buy 700 rupees lottery and earn 9000000000000",
+    "result": "fake",
+    "probability": 0.9,
+    "category": "money",
+    "timestamp": 1767721039
+  },
+  {
+    "text": "Buy 700 rupees lottery and earn 9000000000000",
+    "result": "fake",
+    "probability": 0.9,
+    "category": "money",
+    "timestamp": 1767723246
+  },
+  {
+    "text": "New batch starting soon for BBA. Enroll now.",
+    "result": "genuine",
+    "probability": 0.9201170526570542,
+    "category": "general",
+    "timestamp": 1767723279
+  }
 ]

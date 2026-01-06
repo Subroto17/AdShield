@@ -1,147 +1,109 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import joblib
-import os
-import json
-import time
-import re
-import sys
-import tempfile
+import json, os, time, re
 
-# ---------------- APP SETUP ---------------- #
 app = Flask(__name__)
 CORS(app)
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
-VECTORIZER_PATH = os.path.join(BASE_DIR, "vectorizer.pkl")
-SCANS_FILE = os.path.join(BASE_DIR, "scans.json")
+MODEL_PATH = "model.pkl"
+VECTORIZER_PATH = "vectorizer.pkl"
+SCANS_FILE = "scans.json"
 
-# ---------------- SAFE MODEL LOADING ---------------- #
-def load_model_safe():
-    if not os.path.exists(MODEL_PATH) or not os.path.exists(VECTORIZER_PATH):
-        print("\n❌ Model files not found.")
-        print("👉 Run: python train_model.py")
-        sys.exit(1)
+# ================= LOAD MODEL =================
+try:
+    model = joblib.load(MODEL_PATH)
+    vectorizer = joblib.load(VECTORIZER_PATH)
+    print("✅ Model & vectorizer loaded successfully")
+except Exception as e:
+    print("❌ Model files corrupted or missing.")
+    print("👉 Run: python train_model.py")
+    raise e
 
-    try:
-        model = joblib.load(MODEL_PATH)
-        vectorizer = joblib.load(VECTORIZER_PATH)
-        print("✅ Model & Vectorizer loaded successfully")
-        return model, vectorizer
-    except Exception as e:
-        print("\n❌ Model files corrupted.")
-        print("👉 Delete model.pkl & vectorizer.pkl")
-        print("👉 Run: python train_model.py")
-        print("Error:", e)
-        sys.exit(1)
-
-model, vectorizer = load_model_safe()
-
-# ---------------- SAFE JSON HELPERS ---------------- #
+# ================= UTIL =================
 def load_scans():
     if not os.path.exists(SCANS_FILE):
         return []
-    try:
-        with open(SCANS_FILE, "r") as f:
-            return json.load(f)
-    except:
-        return []
+    with open(SCANS_FILE, "r") as f:
+        return json.load(f)
 
-def safe_write_json(path, data):
-    dir_name = os.path.dirname(path)
-    with tempfile.NamedTemporaryFile("w", dir=dir_name, delete=False) as tf:
-        json.dump(data, tf, indent=4)
-        temp_name = tf.name
-    os.replace(temp_name, path)
+def save_scans(scans):
+    with open(SCANS_FILE, "w") as f:
+        json.dump(scans, f, indent=2)
 
-# ---------------- RULE-BASED SCAM LOGIC ---------------- #
-def contains_huge_money(text):
-    numbers = re.findall(r"\d+", text)
-    for num in numbers:
-        try:
-            if int(num) >= 10_000_000:  # 1 crore+
-                return True
-        except:
-            continue
-    return False
-
-def rule_based_scam(text):
-    text = text.lower()
-
-    lottery_words = ["lottery", "lucky draw", "jackpot"]
-    earn_words = ["earn", "win", "profit", "guaranteed"]
-
-    if any(w in text for w in lottery_words) and any(w in text for w in earn_words):
-        return True
-
-    if contains_huge_money(text):
-        return True
-
-    return False
-
-# ---------------- CATEGORY DETECTION ---------------- #
+# ================= CATEGORY =================
 def get_category(text):
-    text = text.lower()
-
-    if any(w in text for w in ["earn", "money", "profit", "income"]):
+    t = text.lower()
+    if any(w in t for w in ["lottery", "earn", "money", "profit", "investment"]):
         return "money"
-    if any(w in text for w in ["job", "hiring", "vacancy", "salary"]):
+    if any(w in t for w in ["job", "salary", "hiring", "vacancy"]):
         return "job"
-    if any(w in text for w in ["lottery", "jackpot", "lucky"]):
-        return "lottery"
-    if any(w in text for w in ["crypto", "bitcoin", "investment"]):
+    if any(w in t for w in ["crypto", "bitcoin", "trading"]):
         return "crypto"
-
     return "general"
 
-# ---------------- HEALTH CHECK ---------------- #
-@app.route("/health")
-def health():
-    return jsonify({"status": "ok"})
+# ================= RULE-BASED OVERRIDE =================
+def rule_based_fake(text):
+    t = text.lower()
 
-# ---------------- PREDICTION API ---------------- #
+    scam_keywords = [
+        "lottery", "guaranteed", "earn money", "double your money",
+        "investment return", "free money", "quick cash"
+    ]
+
+    if any(word in t for word in scam_keywords):
+        return True
+
+    # Unrealistic large numbers
+    if re.search(r"\b\d{8,}\b", t):
+        return True
+
+    # Low pay → huge return
+    if "earn" in t and re.search(r"\d+", t):
+        numbers = [int(n) for n in re.findall(r"\d+", t)]
+        if len(numbers) >= 2 and min(numbers) < 1000 and max(numbers) > 100000:
+            return True
+
+    return False
+
+# ================= PREDICT API =================
 @app.route("/predict", methods=["POST"])
 def predict():
-    data = request.get_json()
+    data = request.json
     text = data.get("text", "").strip()
 
     if not text:
-        return jsonify({"error": "No text provided"}), 400
+        return jsonify({"error": "Empty input"}), 400
 
-    vector = vectorizer.transform([text])
+    forced_fake = rule_based_fake(text)
 
-    ml_pred = model.predict(vector)[0]
-    ml_prob = model.predict_proba(vector)[0][ml_pred]
+    vec = vectorizer.transform([text])
+    ml_pred = int(model.predict(vec)[0])
+    ml_prob = float(model.predict_proba(vec)[0][ml_pred])
 
-    label = "fake" if ml_pred == 1 else "genuine"
-    probability = float(ml_prob)
-
-    # -------- RULE OVERRIDE -------- #
-    if rule_based_scam(text):
-        label = "fake"
-        probability = max(probability, 0.85)
-
-    category = get_category(text)
+    if forced_fake:
+        result = "fake"
+        probability = max(ml_prob, 0.9)
+    else:
+        result = "fake" if ml_pred == 1 else "genuine"
+        probability = ml_prob
 
     scans = load_scans()
     scans.append({
         "text": text,
-        "result": label,
-        "category": category,
+        "result": result,
         "probability": probability,
+        "category": get_category(text),
         "timestamp": int(time.time())
     })
-
-    safe_write_json(SCANS_FILE, scans)
+    save_scans(scans)
 
     return jsonify({
-        "result": label,
-        "probability": probability,
-        "category": category
+        "result": result,
+        "probability": probability
     })
 
-# ---------------- DASHBOARD SUMMARY ---------------- #
+# ================= DASHBOARD: SUMMARY =================
 @app.route("/dashboard/summary")
 def dashboard_summary():
     scans = load_scans()
@@ -154,7 +116,7 @@ def dashboard_summary():
     for s in scans:
         categories[s["category"]] = categories.get(s["category"], 0) + 1
 
-    top_category = max(categories, key=categories.get) if categories else "none"
+    top_category = max(categories, key=categories.get) if categories else "-"
 
     return jsonify({
         "total_scans": total,
@@ -164,24 +126,7 @@ def dashboard_summary():
         "top_category": top_category
     })
 
-# ---------------- DASHBOARD TIMELINE ---------------- #
-@app.route("/dashboard/timeline")
-def dashboard_timeline():
-    scans = load_scans()
-    timeline = {}
-
-    for s in scans:
-        date = time.strftime("%Y-%m-%d", time.localtime(s["timestamp"]))
-        timeline.setdefault(date, {"fake": 0, "genuine": 0})
-        timeline[date][s["result"]] += 1
-
-    return jsonify({
-        "dates": list(timeline.keys()),
-        "fake": [timeline[d]["fake"] for d in timeline],
-        "genuine": [timeline[d]["genuine"] for d in timeline]
-    })
-
-# ---------------- DASHBOARD CATEGORIES ---------------- #
+# ================= DASHBOARD: CATEGORIES =================
 @app.route("/dashboard/categories")
 def dashboard_categories():
     scans = load_scans()
@@ -195,6 +140,39 @@ def dashboard_categories():
         "counts": list(categories.values())
     })
 
-# ---------------- RUN SERVER ---------------- #
+# ================= DASHBOARD: TIMELINE =================
+@app.route("/dashboard/timeline")
+def dashboard_timeline():
+    scans = load_scans()
+    timeline = {}
+
+    for s in scans:
+        date = time.strftime("%Y-%m-%d", time.localtime(s["timestamp"]))
+        if date not in timeline:
+            timeline[date] = {"fake": 0, "genuine": 0}
+        timeline[date][s["result"]] += 1
+
+    return jsonify({
+        "dates": list(timeline.keys()),
+        "fake": [timeline[d]["fake"] for d in timeline],
+        "genuine": [timeline[d]["genuine"] for d in timeline]
+    })
+
+# ================= DASHBOARD: RECENT SCANS =================
+@app.route("/dashboard/recent")
+def dashboard_recent():
+    scans = load_scans()
+    recent = scans[-5:][::-1]
+
+    return jsonify([
+        {
+            "text": s["text"][:60] + ("..." if len(s["text"]) > 60 else ""),
+            "result": s["result"],
+            "category": s["category"],
+            "time": time.strftime("%H:%M:%S", time.localtime(s["timestamp"]))
+        }
+        for s in recent
+    ])
+
 if __name__ == "__main__":
     app.run(debug=True)

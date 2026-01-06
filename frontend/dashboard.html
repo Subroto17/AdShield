@@ -2,12 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - AdShield AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="assets/css/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   </head>
 
   <body>
@@ -16,98 +15,95 @@
       <a href="index.html" class="logo"><b>AdShield AI</b></a>
       <div class="nav-links">
         <a href="index.html">Home</a>
-        <a href="scan.html">Scan Ad</a>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="report.html">Report Scam</a>
+        <a href="scan.html">Scan</a>
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="report.html">Report</a>
         <a href="learn.html">Learn</a>
         <a href="admin.html">Admin</a>
       </div>
     </div>
 
     <!-- DASHBOARD CONTAINER -->
-    <div
-      style="max-width: 1200px; margin: 40px auto; padding: 0 20px"
-      data-aos="fade-up"
-    >
-      <h2 style="text-align: center">Analytics Dashboard</h2>
-      <p
-        style="
-          text-align: center;
-          color: var(--text-light);
-          margin-bottom: 40px;
-        "
-      >
-        Real-time statistics from all scanned advertisements.
-      </p>
-
-      <!-- TOP CARDS -->
+    <div style="max-width: 1200px; margin: 40px auto">
+      <!-- KPI CARDS -->
       <div
-        id="cards-row"
         style="
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 20px;
+        "
+      >
+        <div class="card-soft">
+          <h4>Total Scans</h4>
+          <h2 id="totalScans">0</h2>
+        </div>
+        <div class="card-soft">
+          <h4>Fake Ads</h4>
+          <h2 style="color: #e74a3b" id="fakeCount">0</h2>
+        </div>
+        <div class="card-soft">
+          <h4>Genuine Ads</h4>
+          <h2 style="color: #1cc88a" id="genuineCount">0</h2>
+        </div>
+        <div class="card-soft">
+          <h4>Top Scam Category</h4>
+          <h2 id="topCategory">-</h2>
+        </div>
+      </div>
+
+      <!-- INSIGHT -->
+      <div class="card-border" style="margin-top: 30px">
+        <h3>🔍 System Insight</h3>
+        <p id="insightText">Loading insights...</p>
+      </div>
+
+      <!-- CHARTS -->
+      <div
+        style="
+          display: grid;
+          grid-template-columns: 2fr 1fr;
           gap: 25px;
+          margin-top: 40px;
         "
       >
         <div class="card-soft">
-          <h3>📊 Total Ads Scanned</h3>
-          <p id="totalScans" class="dash-number">0</p>
+          <h3>📈 Scam Trend Over Time</h3>
+          <canvas id="timelineChart"></canvas>
         </div>
-
         <div class="card-soft">
-          <h3>⚠️ Fake Ads</h3>
-          <p id="fakeCount" class="dash-number" style="color: #ef4444">0</p>
-        </div>
-
-        <div class="card-soft">
-          <h3>🟢 Genuine Ads</h3>
-          <p id="genuineCount" class="dash-number" style="color: #10b981">0</p>
-        </div>
-
-        <div class="card-soft">
-          <h3>🔥 Top Scam Category</h3>
-          <p id="topCategory" class="dash-number">-</p>
+          <h3>🥧 Fake vs Genuine</h3>
+          <canvas id="pieChart"></canvas>
         </div>
       </div>
 
-      <!-- CHARTS SECTION -->
-      <div
-        style="
-          margin-top: 60px;
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 35px;
-        "
-      >
-        <!-- LINE CHART -->
-        <div class="card-soft">
-          <h3 style="margin-bottom: 15px">Fake vs Genuine Over Time</h3>
-          <canvas id="timelineChart" height="130"></canvas>
-        </div>
-
-        <!-- BAR CHART -->
-        <div class="card-soft">
-          <h3 style="margin-bottom: 15px">Category-wise Scam Count</h3>
-          <canvas id="categoryChart" height="130"></canvas>
-        </div>
+      <div class="card-soft" style="margin-top: 30px">
+        <h3>📊 Scam Categories</h3>
+        <canvas id="categoryChart"></canvas>
       </div>
 
-      <!-- PIE CHART -->
-      <div style="margin-top: 40px">
-        <div class="card-soft">
-          <h3 style="margin-bottom: 15px">Fake vs Genuine Ratio</h3>
-          <canvas id="pieChart" height="120"></canvas>
-        </div>
+      <!-- RECENT SCANS -->
+      <div class="card-soft" style="margin-top: 40px">
+        <h3>🕒 Recent Scans</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px">
+          <thead>
+            <tr style="border-bottom: 1px solid #e5e7eb">
+              <th align="left">Advertisement</th>
+              <th>Result</th>
+              <th>Category</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="recentScans">
+            <tr>
+              <td colspan="4">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer>© 2025 AdShield AI — Fake Advertisement Detection System</footer>
+    <footer>© 2025 AdShield AI — Dashboard</footer>
 
     <script src="assets/js/script.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-      AOS.init();
-    </script>
   </body>
 </html>
