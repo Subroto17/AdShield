@@ -1,17 +1,17 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import joblib
-import json
 import os
-import sys
+import json
 import time
+import re
+import sys
 import tempfile
 
-# ---------------- APP INIT ---------------- #
+# ---------------- APP SETUP ---------------- #
 app = Flask(__name__)
 CORS(app)
 
-# ---------------- PATHS ---------------- #
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
 VECTORIZER_PATH = os.path.join(BASE_DIR, "vectorizer.pkl")
@@ -27,11 +27,12 @@ def load_model_safe():
     try:
         model = joblib.load(MODEL_PATH)
         vectorizer = joblib.load(VECTORIZER_PATH)
-        print("✅ Model & Vectorizer loaded successfully.")
+        print("✅ Model & Vectorizer loaded successfully")
         return model, vectorizer
     except Exception as e:
-        print("\n❌ Model files are corrupted.")
-        print("👉 Stop server, retrain model, then restart.")
+        print("\n❌ Model files corrupted.")
+        print("👉 Delete model.pkl & vectorizer.pkl")
+        print("👉 Run: python train_model.py")
         print("Error:", e)
         sys.exit(1)
 
@@ -54,21 +55,43 @@ def safe_write_json(path, data):
         temp_name = tf.name
     os.replace(temp_name, path)
 
+# ---------------- RULE-BASED SCAM LOGIC ---------------- #
+def contains_huge_money(text):
+    numbers = re.findall(r"\d+", text)
+    for num in numbers:
+        try:
+            if int(num) >= 10_000_000:  # 1 crore+
+                return True
+        except:
+            continue
+    return False
+
+def rule_based_scam(text):
+    text = text.lower()
+
+    lottery_words = ["lottery", "lucky draw", "jackpot"]
+    earn_words = ["earn", "win", "profit", "guaranteed"]
+
+    if any(w in text for w in lottery_words) and any(w in text for w in earn_words):
+        return True
+
+    if contains_huge_money(text):
+        return True
+
+    return False
+
 # ---------------- CATEGORY DETECTION ---------------- #
 def get_category(text):
     text = text.lower()
 
-    categories = {
-        "money": ["earn", "income", "profit", "money", "cash", "work from home"],
-        "job": ["job", "hiring", "interview", "vacancy", "salary"],
-        "shopping": ["free", "offer", "discount", "sale", "voucher"],
-        "crypto": ["crypto", "btc", "bitcoin", "investment", "trading"],
-        "kyc": ["kyc", "verification", "account blocked"]
-    }
-
-    for category, words in categories.items():
-        if any(word in text for word in words):
-            return category
+    if any(w in text for w in ["earn", "money", "profit", "income"]):
+        return "money"
+    if any(w in text for w in ["job", "hiring", "vacancy", "salary"]):
+        return "job"
+    if any(w in text for w in ["lottery", "jackpot", "lucky"]):
+        return "lottery"
+    if any(w in text for w in ["crypto", "bitcoin", "investment"]):
+        return "crypto"
 
     return "general"
 
@@ -77,7 +100,7 @@ def get_category(text):
 def health():
     return jsonify({"status": "ok"})
 
-# ---------------- SCAN API ---------------- #
+# ---------------- PREDICTION API ---------------- #
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.get_json()
@@ -87,10 +110,18 @@ def predict():
         return jsonify({"error": "No text provided"}), 400
 
     vector = vectorizer.transform([text])
-    prediction = model.predict(vector)[0]
-    probability = model.predict_proba(vector)[0][prediction]
 
-    label = "fake" if prediction == 1 else "genuine"
+    ml_pred = model.predict(vector)[0]
+    ml_prob = model.predict_proba(vector)[0][ml_pred]
+
+    label = "fake" if ml_pred == 1 else "genuine"
+    probability = float(ml_prob)
+
+    # -------- RULE OVERRIDE -------- #
+    if rule_based_scam(text):
+        label = "fake"
+        probability = max(probability, 0.85)
+
     category = get_category(text)
 
     scans = load_scans()
@@ -98,7 +129,7 @@ def predict():
         "text": text,
         "result": label,
         "category": category,
-        "probability": float(probability),
+        "probability": probability,
         "timestamp": int(time.time())
     })
 
@@ -106,23 +137,22 @@ def predict():
 
     return jsonify({
         "result": label,
-        "probability": float(probability),
+        "probability": probability,
         "category": category
     })
 
-# ---------------- DASHBOARD APIs ---------------- #
+# ---------------- DASHBOARD SUMMARY ---------------- #
 @app.route("/dashboard/summary")
 def dashboard_summary():
     scans = load_scans()
 
     total = len(scans)
-    fake = sum(1 for x in scans if x["result"] == "fake")
-    genuine = sum(1 for x in scans if x["result"] == "genuine")
+    fake = sum(1 for s in scans if s["result"] == "fake")
+    genuine = sum(1 for s in scans if s["result"] == "genuine")
 
     categories = {}
-    for scan in scans:
-        cat = scan["category"]
-        categories[cat] = categories.get(cat, 0) + 1
+    for s in scans:
+        categories[s["category"]] = categories.get(s["category"], 0) + 1
 
     top_category = max(categories, key=categories.get) if categories else "none"
 
@@ -134,34 +164,35 @@ def dashboard_summary():
         "top_category": top_category
     })
 
-@app.route("/dashboard/categories")
-def dashboard_categories():
-    scans = load_scans()
-
-    categories = {}
-    for scan in scans:
-        cat = scan["category"]
-        categories[cat] = categories.get(cat, 0) + 1
-
-    return jsonify({
-        "labels": list(categories.keys()),
-        "counts": list(categories.values())
-    })
-
+# ---------------- DASHBOARD TIMELINE ---------------- #
 @app.route("/dashboard/timeline")
 def dashboard_timeline():
     scans = load_scans()
-
     timeline = {}
-    for scan in scans:
-        date = time.strftime("%Y-%m-%d", time.localtime(scan["timestamp"]))
+
+    for s in scans:
+        date = time.strftime("%Y-%m-%d", time.localtime(s["timestamp"]))
         timeline.setdefault(date, {"fake": 0, "genuine": 0})
-        timeline[date][scan["result"]] += 1
+        timeline[date][s["result"]] += 1
 
     return jsonify({
         "dates": list(timeline.keys()),
         "fake": [timeline[d]["fake"] for d in timeline],
         "genuine": [timeline[d]["genuine"] for d in timeline]
+    })
+
+# ---------------- DASHBOARD CATEGORIES ---------------- #
+@app.route("/dashboard/categories")
+def dashboard_categories():
+    scans = load_scans()
+    categories = {}
+
+    for s in scans:
+        categories[s["category"]] = categories.get(s["category"], 0) + 1
+
+    return jsonify({
+        "labels": list(categories.keys()),
+        "counts": list(categories.values())
     })
 
 # ---------------- RUN SERVER ---------------- #
