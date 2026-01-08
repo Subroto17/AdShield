@@ -2,15 +2,19 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import joblib
 import json, os, time, re
+from collections import Counter, defaultdict
 
+# ================= APP =================
 app = Flask(__name__)
 CORS(app)
 
-MODEL_PATH = "model.pkl"
-VECTORIZER_PATH = "vectorizer.pkl"
-SCANS_FILE = "scans.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# ================= LOAD MODEL =================
+MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
+VECTORIZER_PATH = os.path.join(BASE_DIR, "vectorizer.pkl")
+SCANS_FILE = os.path.join(BASE_DIR, "scans.json")
+
+# ================= LOAD MODEL (SAFE) =================
 try:
     model = joblib.load(MODEL_PATH)
     vectorizer = joblib.load(VECTORIZER_PATH)
@@ -20,53 +24,57 @@ except Exception as e:
     print("👉 Run: python train_model.py")
     raise e
 
-# ================= UTIL =================
+# ================= STORAGE HELPERS =================
 def load_scans():
     if not os.path.exists(SCANS_FILE):
         return []
-    with open(SCANS_FILE, "r") as f:
-        return json.load(f)
+    try:
+        with open(SCANS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return []
 
 def save_scans(scans):
-    with open(SCANS_FILE, "w") as f:
+    with open(SCANS_FILE, "w", encoding="utf-8") as f:
         json.dump(scans, f, indent=2)
 
-# ================= CATEGORY =================
+# ================= CATEGORY LOGIC =================
 def get_category(text):
     t = text.lower()
-    if any(w in t for w in ["lottery", "earn", "money", "profit", "investment"]):
-        return "money"
+    if any(w in t for w in ["lottery", "earn", "money", "investment", "profit"]):
+        return "Money Scam"
     if any(w in t for w in ["job", "salary", "hiring", "vacancy"]):
-        return "job"
+        return "Job Scam"
+    if any(w in t for w in ["free", "offer", "voucher", "discount"]):
+        return "Shopping Scam"
     if any(w in t for w in ["crypto", "bitcoin", "trading"]):
-        return "crypto"
-    return "general"
+        return "Crypto Scam"
+    return "General Scam"
 
 # ================= RULE-BASED OVERRIDE =================
 def rule_based_fake(text):
     t = text.lower()
 
     scam_keywords = [
-        "lottery", "guaranteed", "earn money", "double your money",
-        "investment return", "free money", "quick cash"
+        "lottery", "guaranteed", "double your money",
+        "earn money fast", "free money", "quick cash"
     ]
 
     if any(word in t for word in scam_keywords):
         return True
 
-    # Unrealistic large numbers
+    # Unrealistic numbers
     if re.search(r"\b\d{8,}\b", t):
         return True
 
-    # Low pay → huge return
-    if "earn" in t and re.search(r"\d+", t):
-        numbers = [int(n) for n in re.findall(r"\d+", t)]
-        if len(numbers) >= 2 and min(numbers) < 1000 and max(numbers) > 100000:
-            return True
+    # Low pay + huge return
+    nums = [int(n) for n in re.findall(r"\d+", t)]
+    if len(nums) >= 2 and min(nums) < 1000 and max(nums) > 100000:
+        return True
 
     return False
 
-# ================= PREDICT API =================
+# ================= SCAN API =================
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.json
@@ -90,9 +98,9 @@ def predict():
 
     scans = load_scans()
     scans.append({
-        "text": text,
+        "text": text[:200],
         "result": result,
-        "probability": probability,
+        "probability": round(probability, 2),
         "category": get_category(text),
         "timestamp": int(time.time())
     })
@@ -112,28 +120,21 @@ def dashboard_summary():
     fake = sum(1 for s in scans if s["result"] == "fake")
     genuine = sum(1 for s in scans if s["result"] == "genuine")
 
-    categories = {}
-    for s in scans:
-        categories[s["category"]] = categories.get(s["category"], 0) + 1
-
-    top_category = max(categories, key=categories.get) if categories else "-"
+    categories = Counter(s["category"] for s in scans)
+    top_category = categories.most_common(1)[0][0] if categories else "-"
 
     return jsonify({
         "total_scans": total,
         "fake": fake,
         "genuine": genuine,
-        "categories": categories,
         "top_category": top_category
     })
 
-# ================= DASHBOARD: CATEGORIES =================
+# ================= DASHBOARD: CATEGORY BAR =================
 @app.route("/dashboard/categories")
 def dashboard_categories():
     scans = load_scans()
-    categories = {}
-
-    for s in scans:
-        categories[s["category"]] = categories.get(s["category"], 0) + 1
+    categories = Counter(s["category"] for s in scans)
 
     return jsonify({
         "labels": list(categories.keys()),
@@ -144,35 +145,25 @@ def dashboard_categories():
 @app.route("/dashboard/timeline")
 def dashboard_timeline():
     scans = load_scans()
-    timeline = {}
+    timeline = defaultdict(lambda: {"fake": 0, "genuine": 0})
 
     for s in scans:
         date = time.strftime("%Y-%m-%d", time.localtime(s["timestamp"]))
-        if date not in timeline:
-            timeline[date] = {"fake": 0, "genuine": 0}
         timeline[date][s["result"]] += 1
 
+    dates = sorted(timeline.keys())
     return jsonify({
-        "dates": list(timeline.keys()),
-        "fake": [timeline[d]["fake"] for d in timeline],
-        "genuine": [timeline[d]["genuine"] for d in timeline]
+        "dates": dates,
+        "fake": [timeline[d]["fake"] for d in dates],
+        "genuine": [timeline[d]["genuine"] for d in dates]
     })
 
 # ================= DASHBOARD: RECENT SCANS =================
 @app.route("/dashboard/recent")
 def dashboard_recent():
-    scans = load_scans()
-    recent = scans[-5:][::-1]
+    scans = load_scans()[-10:][::-1]
+    return jsonify(scans)
 
-    return jsonify([
-        {
-            "text": s["text"][:60] + ("..." if len(s["text"]) > 60 else ""),
-            "result": s["result"],
-            "category": s["category"],
-            "time": time.strftime("%H:%M:%S", time.localtime(s["timestamp"]))
-        }
-        for s in recent
-    ])
-
+# ================= START =================
 if __name__ == "__main__":
     app.run(debug=True)

@@ -4,6 +4,8 @@ const API_BASE = "http://127.0.0.1:5000";
 
 async function predict() {
   const textArea = document.getElementById("adText");
+  if (!textArea) return;
+
   const text = textArea.value.trim();
 
   if (!text) {
@@ -69,7 +71,6 @@ async function predict() {
     output.innerHTML = highlighted;
     output.style.display = "block";
 
-    // Clear textarea only AFTER success
     textArea.value = "";
   } catch (err) {
     console.error(err);
@@ -80,10 +81,23 @@ async function predict() {
 
 /* ================= DASHBOARD ================= */
 
+// chart instances (DO NOT REMOVE)
+let categoryChart = null;
+let timelineChart = null;
+let pieChart = null;
+
+// helper to avoid crashes on other pages
+function el(id) {
+  return document.getElementById(id);
+}
+
 async function loadDashboard() {
+  if (!el("totalScans")) return; // ensures this runs ONLY on dashboard
+
   await loadSummary();
   await loadCategories();
   await loadTimeline();
+  await loadPie();
   await loadRecentScans();
 }
 
@@ -92,32 +106,30 @@ async function loadSummary() {
   const res = await fetch(`${API_BASE}/dashboard/summary`);
   const data = await res.json();
 
-  document.getElementById("totalScans").innerText = data.total_scans;
-  document.getElementById("fakeCount").innerText = data.fake;
-  document.getElementById("genuineCount").innerText = data.genuine;
-  document.getElementById("topCategory").innerText =
-    data.top_category.toUpperCase();
+  if (el("totalScans")) el("totalScans").innerText = data.total_scans;
+  if (el("fakeCount")) el("fakeCount").innerText = data.fake;
+  if (el("genuineCount")) el("genuineCount").innerText = data.genuine;
+  if (el("topCategory"))
+    el("topCategory").innerText = data.top_category.toUpperCase();
 
-  const insight = document.getElementById("insightText");
-  if (data.fake > data.genuine) {
-    insight.innerText =
-      "⚠️ Alert: High number of fake advertisements detected. Most scams relate to " +
-      data.top_category.toUpperCase();
-  } else {
-    insight.innerText =
-      "✅ System Status: Majority of scanned advertisements appear genuine.";
+  if (el("insightText")) {
+    el("insightText").innerText =
+      data.fake > data.genuine
+        ? "⚠️ High scam activity detected. Most scams belong to " +
+          data.top_category.toUpperCase()
+        : "✅ System healthy. Majority of advertisements are genuine.";
   }
 }
 
 /* -------- CATEGORY BAR -------- */
-let categoryChart;
 async function loadCategories() {
   const res = await fetch(`${API_BASE}/dashboard/categories`);
   const data = await res.json();
 
+  if (!el("categoryChart")) return;
   if (categoryChart) categoryChart.destroy();
 
-  categoryChart = new Chart(document.getElementById("categoryChart"), {
+  categoryChart = new Chart(el("categoryChart"), {
     type: "bar",
     data: {
       labels: data.labels,
@@ -131,20 +143,21 @@ async function loadCategories() {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: { legend: { display: false } },
     },
   });
 }
 
 /* -------- TIMELINE -------- */
-let timelineChart;
 async function loadTimeline() {
   const res = await fetch(`${API_BASE}/dashboard/timeline`);
   const data = await res.json();
 
+  if (!el("timelineChart")) return;
   if (timelineChart) timelineChart.destroy();
 
-  timelineChart = new Chart(document.getElementById("timelineChart"), {
+  timelineChart = new Chart(el("timelineChart"), {
     type: "line",
     data: {
       labels: data.dates,
@@ -153,31 +166,32 @@ async function loadTimeline() {
           label: "Fake",
           data: data.fake,
           borderColor: "#e74a3b",
-          fill: false,
           tension: 0.4,
         },
         {
           label: "Genuine",
           data: data.genuine,
           borderColor: "#1cc88a",
-          fill: false,
           tension: 0.4,
         },
       ],
     },
-    options: { responsive: true },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+    },
   });
 }
 
 /* -------- PIE -------- */
-let pieChart;
 async function loadPie() {
   const res = await fetch(`${API_BASE}/dashboard/summary`);
   const data = await res.json();
 
+  if (!el("pieChart")) return;
   if (pieChart) pieChart.destroy();
 
-  pieChart = new Chart(document.getElementById("pieChart"), {
+  pieChart = new Chart(el("pieChart"), {
     type: "pie",
     data: {
       labels: ["Fake", "Genuine"],
@@ -188,15 +202,21 @@ async function loadPie() {
         },
       ],
     },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+    },
   });
 }
 
 /* -------- RECENT SCANS -------- */
 async function loadRecentScans() {
+  if (!el("recentScans")) return;
+
   const res = await fetch(`${API_BASE}/dashboard/recent`);
   const scans = await res.json();
 
-  const tbody = document.getElementById("recentScans");
+  const tbody = el("recentScans");
   tbody.innerHTML = "";
 
   if (scans.length === 0) {
@@ -212,7 +232,7 @@ async function loadRecentScans() {
         ${s.result.toUpperCase()}
       </td>
       <td>${s.category}</td>
-      <td>${s.time}</td>
+      <td>${Math.round(s.probability * 100)}%</td>
     `;
     tbody.appendChild(row);
   });
@@ -221,6 +241,5 @@ async function loadRecentScans() {
 /* -------- AUTO LOAD -------- */
 if (window.location.pathname.includes("dashboard.html")) {
   loadDashboard();
-  loadPie();
-  setInterval(loadDashboard, 15000); // auto refresh every 15 sec
+  setInterval(loadDashboard, 20000);
 }

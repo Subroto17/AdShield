@@ -1,51 +1,44 @@
 [
   {
-    "text": "Buy 700 rupees lottery and earn 9000000000000",
-    "result": "fake",
-    "category": "money",
-    "probability": 0.85,
-    "timestamp": 1767696293
-  },
-  {
-    "text": "Buy 700 rupees lottery and earn 9000000000000",
-    "result": "fake",
-    "probability": 0.5938351773678922,
-    "category": "money",
-    "timestamp": 1767717357
-  },
-  {
-    "text": "It is fake",
-    "result": "fake",
-    "probability": 0.5115876845143187,
-    "category": "general",
-    "timestamp": 1767717370
-  },
-  {
-    "text": "\"Buy 700 rupees lottery and earn 9000000000000\",fake\n\"Pay 500 and win 5 crore lottery guaranteed\",fake\n\"Earn 1 lakh per day by investing 100\",fake\n\"Lottery scheme earn crores instantly\",fake\n\"Pay registration fee and get lottery money\",fake\n\"Guaranteed income from lottery investment\",fake",
-    "result": "fake",
-    "probability": 0.9,
-    "category": "money",
-    "timestamp": 1767718429
-  },
-  {
-    "text": "Buy 700 rupees lottery and earn 9000000000000",
-    "result": "fake",
-    "probability": 0.9,
-    "category": "money",
-    "timestamp": 1767721039
-  },
-  {
-    "text": "Buy 700 rupees lottery and earn 9000000000000",
-    "result": "fake",
-    "probability": 0.9,
-    "category": "money",
-    "timestamp": 1767723246
-  },
-  {
-    "text": "New batch starting soon for BBA. Enroll now.",
+    "text": "Fresh groceries available for home delivery in your area.",
     "result": "genuine",
-    "probability": 0.9201170526570542,
-    "category": "general",
-    "timestamp": 1767723279
+    "probability": 0.93,
+    "category": "General Scam",
+    "timestamp": 1767878853
+  },
+  {
+    "text": "Order your daily essentials easily through our mobile app.",
+    "result": "genuine",
+    "probability": 0.93,
+    "category": "General Scam",
+    "timestamp": 1767878864
+  },
+  {
+    "text": "Get free mobile phone by registering within 12 minutes!",
+    "result": "fake",
+    "probability": 0.76,
+    "category": "Shopping Scam",
+    "timestamp": 1767878886
+  },
+  {
+    "text": "Investment scheme offering 153% guaranteed returns. Join fast!",
+    "result": "fake",
+    "probability": 0.9,
+    "category": "Money Scam",
+    "timestamp": 1767878911
+  },
+  {
+    "text": "Your KYC is expired. Update now to avoid account block.",
+    "result": "fake",
+    "probability": 0.94,
+    "category": "General Scam",
+    "timestamp": 1767878920
+  },
+  {
+    "text": "Earn \u20b918335 per day working from home. Limited slots available!",
+    "result": "fake",
+    "probability": 0.89,
+    "category": "Money Scam",
+    "timestamp": 1767880141
   }
 ]

@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <title>Dashboard - AdShield AI</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="assets/css/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,93 +15,75 @@
       <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="scan.html">Scan</a>
-        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="dashboard.html">Dashboard</a>
         <a href="report.html">Report</a>
         <a href="learn.html">Learn</a>
         <a href="admin.html">Admin</a>
       </div>
     </div>
 
-    <!-- DASHBOARD CONTAINER -->
-    <div style="max-width: 1200px; margin: 40px auto">
+    <!-- MAIN -->
+    <div class="container">
+      <h2 style="text-align: center; margin-bottom: 10px">
+        Analytics Dashboard
+      </h2>
+      <p style="text-align: center; color: #666">
+        Real-time insights from scanned advertisements
+      </p>
+
       <!-- KPI CARDS -->
-      <div
-        style="
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 20px;
-        "
-      >
-        <div class="card-soft">
+      <div class="kpi-grid">
+        <div class="kpi-card">
           <h4>Total Scans</h4>
-          <h2 id="totalScans">0</h2>
+          <p id="totalScans">0</p>
         </div>
-        <div class="card-soft">
+        <div class="kpi-card">
           <h4>Fake Ads</h4>
-          <h2 style="color: #e74a3b" id="fakeCount">0</h2>
+          <p id="fakeCount" style="color: #e74a3b">0</p>
         </div>
-        <div class="card-soft">
+        <div class="kpi-card">
           <h4>Genuine Ads</h4>
-          <h2 style="color: #1cc88a" id="genuineCount">0</h2>
+          <p id="genuineCount" style="color: #1cc88a">0</p>
         </div>
-        <div class="card-soft">
+        <div class="kpi-card">
           <h4>Top Scam Category</h4>
-          <h2 id="topCategory">-</h2>
+          <p id="topCategory">-</p>
         </div>
       </div>
 
-      <!-- INSIGHT -->
-      <div class="card-border" style="margin-top: 30px">
+      <!-- SYSTEM INSIGHT -->
+      <div class="card-soft" style="margin-top: 25px">
         <h3>🔍 System Insight</h3>
         <p id="insightText">Loading insights...</p>
       </div>
 
-      <!-- CHARTS -->
-      <div
-        style="
-          display: grid;
-          grid-template-columns: 2fr 1fr;
-          gap: 25px;
-          margin-top: 40px;
-        "
-      >
-        <div class="card-soft">
+      <!-- CHART GRID -->
+      <div class="dashboard-grid">
+        <div class="card-soft chart-card">
           <h3>📈 Scam Trend Over Time</h3>
-          <canvas id="timelineChart"></canvas>
+          <div class="chart-container">
+            <canvas id="timelineChart"></canvas>
+          </div>
         </div>
-        <div class="card-soft">
-          <h3>🥧 Fake vs Genuine</h3>
-          <canvas id="pieChart"></canvas>
+
+        <div class="card-soft chart-card">
+          <h3>🟠 Fake vs Genuine</h3>
+          <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+          </div>
         </div>
       </div>
 
-      <div class="card-soft" style="margin-top: 30px">
+      <!-- CATEGORY -->
+      <div class="card-soft chart-card">
         <h3>📊 Scam Categories</h3>
-        <canvas id="categoryChart"></canvas>
-      </div>
-
-      <!-- RECENT SCANS -->
-      <div class="card-soft" style="margin-top: 40px">
-        <h3>🕒 Recent Scans</h3>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 15px">
-          <thead>
-            <tr style="border-bottom: 1px solid #e5e7eb">
-              <th align="left">Advertisement</th>
-              <th>Result</th>
-              <th>Category</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody id="recentScans">
-            <tr>
-              <td colspan="4">Loading...</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="chart-container">
+          <canvas id="categoryChart"></canvas>
+        </div>
       </div>
     </div>
 
-    <footer>© 2025 AdShield AI — Dashboard</footer>
+    <footer>© 2026 AdShield AI</footer>
 
     <script src="assets/js/script.js"></script>
   </body>

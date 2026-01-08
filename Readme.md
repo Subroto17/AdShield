@@ -298,25 +298,8 @@ or use **Live Server** in VS Code.
 
 # ⭐ 6. Screenshots
 
-(Add your screenshots here)
+![Home Page](image.png)
 
-```
-📌 dashboard preview
-📌 scan results page
-📌 home page UI
-📌 charts
-```
+![Scan Page](image-1.png)
 
----
-
-# ⭐ 7. Future Enhancements
-
-- Image OCR (scan text from screenshots)
-- URL phishing detection
-- Admin authentication
-- Cloud deployment
-- Push notifications for trending scams
-- Auto ML re-training module
-
-
-
+![Dashboard Page](image-2.png)
