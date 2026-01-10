@@ -164,6 +164,37 @@ def dashboard_recent():
     scans = load_scans()[-10:][::-1]
     return jsonify(scans)
 
+# ================= REPORT SCAM API =================
+@app.route("/report", methods=["POST"])
+def report_scam():
+    data = request.json
+
+    scam_type = data.get("scam_type", "").strip()
+    ad_link = data.get("ad_link", "").strip()
+    description = data.get("description", "").strip()
+
+    if not scam_type or not description:
+        return jsonify({"error": "Invalid report data"}), 400
+
+    scans = load_scans()
+
+    scans.append({
+        "text": description,
+        "result": "fake",
+        "probability": 1.0,
+        "category": scam_type.lower(),
+        "timestamp": int(time.time()),
+        "source": "user_report",
+        "ad_link": ad_link
+    })
+
+    save_scans(scans)
+
+    return jsonify({
+        "message": "Report submitted successfully"
+    })
+
+
 # ================= START =================
 if __name__ == "__main__":
     app.run(debug=True)

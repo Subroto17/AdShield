@@ -2,106 +2,107 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Report Scam - AdShield AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Main Styles -->
     <link rel="stylesheet" href="assets/css/style.css" />
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   </head>
 
   <body>
     <!-- NAVBAR -->
     <div class="navbar">
       <a href="index.html" class="logo"><b>AdShield AI</b></a>
-
       <div class="nav-links">
         <a href="index.html">Home</a>
-        <a href="scan.html">Scan Ad</a>
+        <a href="scan.html">Scan</a>
         <a href="dashboard.html">Dashboard</a>
-        <a href="report.html">Report Scam</a>
+        <a href="report.html" class="active">Report Scam</a>
         <a href="learn.html">Learn</a>
         <a href="admin.html">Admin</a>
       </div>
     </div>
 
-    <!-- REPORT FORM WRAPPER -->
-    <div
-      style="max-width: 750px; margin: 40px auto; padding: 0 20px"
-      data-aos="fade-up"
-    >
-      <div class="card-soft">
-        <h2 style="text-align: center; margin-bottom: 10px">
-          Report a Scam Advertisement
-        </h2>
-        <p
-          style="
-            text-align: center;
-            color: var(--text-light);
-            margin-bottom: 30px;
-          "
-        >
-          Help us improve our detection system by reporting a suspicious
-          advertisement.
+    <!-- MAIN CONTENT -->
+    <div class="container">
+      <div class="card-soft" style="max-width: 800px; margin: 50px auto">
+        <h2 style="text-align: center">🛡️ Report a Scam Advertisement</h2>
+        <p style="text-align: center; color: #555; margin-bottom: 30px">
+          Help protect others by reporting suspicious or fraudulent
+          advertisements. All reports are reviewed and used to improve our AI
+          detection system.
         </p>
 
-        <!-- FORM START -->
-        <form>
-          <!-- Type Selection -->
-          <label style="font-weight: 600">Type of Scam</label>
-          <select
-            class="input-select"
-            style="
-              width: 100%;
-              padding: 12px;
-              border-radius: var(--radius-md);
-              border: 1px solid var(--border);
-              margin-bottom: 20px;
-              font-size: 15px;
-            "
-          >
-            <option>Money Earning Scam</option>
-            <option>Job Offer Scam</option>
-            <option>Investment / Crypto Scam</option>
-            <option>Fake Shopping / Discount Scam</option>
-            <option>Lottery / Reward Scam</option>
-            <option>Other</option>
+        <!-- SUCCESS MESSAGE -->
+        <div id="reportSuccess" class="success-box" style="display: none">
+          ✅ Thank you! Your report has been submitted successfully.
+          <br />
+          Our system will use this information to improve scam detection.
+        </div>
+
+        <!-- REPORT FORM -->
+        <form
+          id="reportForm"
+          onsubmit="event.preventDefault(); submitReport();"
+        >
+          <!-- Scam Type -->
+          <label><b>Scam Type</b></label>
+          <select id="scamType" required>
+            <option value="money">💰 Money / Lottery Scam</option>
+            <option value="job">💼 Job Scam</option>
+            <option value="shopping">🛍️ Shopping Scam</option>
+            <option value="crypto">₿ Crypto / Investment Scam</option>
+            <option value="kyc">🆔 KYC / Verification Fraud</option>
+            <option value="general">🌐 General Scam</option>
           </select>
 
-          <!-- URL -->
-          <label style="font-weight: 600">Ad Link (Optional)</label>
+          <!-- Ad Link -->
+          <label style="margin-top: 20px"
+            ><b>Advertisement Link (optional)</b></label
+          >
           <input
             type="text"
-            placeholder="Paste the advertisement URL..."
-            style="margin-bottom: 20px"
+            id="adLink"
+            placeholder="https://example.com/scam-ad"
           />
 
           <!-- Description -->
-          <label style="font-weight: 600">Description</label>
+          <label style="margin-top: 20px"><b>Describe the Scam</b></label>
           <textarea
-            rows="4"
-            placeholder="Explain what makes this ad suspicious..."
-            style="margin-bottom: 20px"
+            id="description"
+            rows="5"
+            placeholder="Explain why you believe this advertisement is fraudulent..."
+            required
           ></textarea>
 
-          <!-- Upload Screenshot -->
-          <label style="font-weight: 600">Upload Screenshot (Optional)</label>
-          <input type="file" style="margin-bottom: 25px" />
-
           <!-- Submit Button -->
-          <button type="button" class="btn-primary" style="width: 100%">
-            Submit Report
+          <button
+            type="submit"
+            id="reportBtn"
+            class="btn-primary"
+            style="margin-top: 25px; width: 100%"
+          >
+            Submit Scam Report
           </button>
         </form>
-        <!-- FORM END -->
+
+        <!-- INFO BOX -->
+        <div
+          class="card-border"
+          style="margin-top: 30px; font-size: 14px; color: #555"
+        >
+          🔒 <b>Privacy Notice:</b> Reports are anonymous. No personal data is
+          stored.
+          <br />
+          📊 Reported scams help improve AI accuracy and community safety.
+        </div>
       </div>
     </div>
 
     <!-- FOOTER -->
-    <footer>© 2026 AdShield AI — Fake Advertisement Detection System</footer>
+    <footer>© 2026 AdShield AI — Community Scam Reporting System</footer>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-      AOS.init();
-    </script>
+    <!-- MAIN SCRIPT -->
+    <script src="assets/js/script.js"></script>
   </body>
 </html>

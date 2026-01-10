@@ -40,5 +40,42 @@
     "probability": 0.89,
     "category": "Money Scam",
     "timestamp": 1767880141
+  },
+  {
+    "text": "Hurry! Crypto plan doubles your money in 25 days. Register now.",
+    "result": "fake",
+    "probability": 0.9,
+    "category": "Money Scam",
+    "timestamp": 1767971227
+  },
+  {
+    "text": "Congratulations! You have won a gift card. Click here to claim now.",
+    "result": "fake",
+    "probability": 0.92,
+    "category": "General Scam",
+    "timestamp": 1767971311
+  },
+  {
+    "text": "New batch starting soon for MBA. Enroll now.",
+    "result": "genuine",
+    "probability": 0.92,
+    "category": "General Scam",
+    "timestamp": 1767971322
+  },
+  {
+    "text": "sex never cause cancer",
+    "result": "fake",
+    "probability": 0.51,
+    "category": "General Scam",
+    "timestamp": 1767971402
+  },
+  {
+    "text": "Click on the link to done your KYC.",
+    "result": "fake",
+    "probability": 1.0,
+    "category": "kyc",
+    "timestamp": 1768051425,
+    "source": "user_report",
+    "ad_link": ""
   }
 ]

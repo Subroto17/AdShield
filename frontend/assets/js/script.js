@@ -243,3 +243,42 @@ if (window.location.pathname.includes("dashboard.html")) {
   loadDashboard();
   setInterval(loadDashboard, 20000);
 }
+
+/* ================= REPORT SCAM ================= */
+
+async function submitReport() {
+  const scamType = document.getElementById("scamType").value;
+  const adLink = document.getElementById("adLink").value;
+  const description = document.getElementById("description").value.trim();
+
+  if (!description) {
+    alert("Please describe the suspicious advertisement.");
+    return;
+  }
+
+  const btn = document.getElementById("reportBtn");
+  btn.innerText = "Submitting...";
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/report`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        scam_type: scamType,
+        ad_link: adLink,
+        description: description,
+      }),
+    });
+
+    const data = await res.json();
+
+    document.getElementById("reportSuccess").style.display = "block";
+    document.getElementById("reportForm").reset();
+  } catch (err) {
+    alert("Backend not reachable. Start app.py");
+  } finally {
+    btn.innerText = "Submit Report";
+    btn.disabled = false;
+  }
+}
