@@ -77,5 +77,14 @@
     "timestamp": 1768051425,
     "source": "user_report",
     "ad_link": ""
+  },
+  {
+    "text": "Shop using this link and get a chance to win IPHONE 17 PRO",
+    "result": "fake",
+    "probability": 1.0,
+    "category": "shopping",
+    "timestamp": 1768052038,
+    "source": "user_report",
+    "ad_link": ""
   }
 ]

@@ -420,7 +420,6 @@ footer {
   color: #777;
 }
 
-
 /* ========== RESPONSIVE ========== */
 @media (max-width: 900px) {
   .kpi-grid {
@@ -435,7 +434,6 @@ footer {
     height: 280px;
   }
 }
-
 
 /* ================= REPORT SCAM PAGE ================= */
 
@@ -497,6 +495,14 @@ footer {
   padding: 15px;
 }
 
+.card-border ul {
+  margin: 0;
+}
+
+.card-border li {
+  margin-bottom: 6px;
+}
+
 /* Mobile optimization */
 @media (max-width: 600px) {
   #reportForm select,
@@ -505,4 +511,3 @@ footer {
     font-size: 14px;
   }
 }
-
