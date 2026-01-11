@@ -11,7 +11,7 @@ CORS(app)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
-VECTORIZER_PATH = os.path.join(BASE_DIR, "vectorizer.pkl")@@
+VECTORIZER_PATH = os.path.join(BASE_DIR, "vectorizer.pkl")
 SCANS_FILE = os.path.join(BASE_DIR, "scans.json")
 
 # ================= LOAD MODEL (SAFE) =================
