@@ -193,6 +193,24 @@ def report_scam():
     return jsonify({
         "message": "Report submitted successfully"
     })
+    
+    
+# ================= ADMIN LOGIN =================
+@app.route("/admin/login", methods=["POST"])
+def admin_login():
+    data = request.json
+
+    username = data.get("username", "")
+    password = data.get("password", "")
+
+    if username == 'ShouryaRaj' and password == 'Subroto@123':
+        return jsonify({"success": True})
+    else:
+        return jsonify({
+            "success": False,
+            "message": "Invalid admin credentials"
+        }), 401
+
 
 
 # ================= START =================

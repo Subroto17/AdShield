@@ -22,7 +22,7 @@
       .admin-card {
         width: 100%;
         max-width: 420px;
-        background: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(12px);
         border-radius: var(--radius-lg);
         padding: 40px 32px;
@@ -51,6 +51,14 @@
 
       .admin-card input {
         margin-bottom: 18px;
+      }
+
+      .admin-error {
+        color: #e74a3b;
+        text-align: center;
+        margin-top: 12px;
+        display: none;
+        font-size: 14px;
       }
 
       @keyframes fadeIn {
@@ -88,15 +96,30 @@
         <p>Restricted access — authorized personnel only</p>
 
         <!-- LOGIN FORM -->
-        <label>Username</label>
-        <input type="text" placeholder="Enter admin username" />
+        <form onsubmit="event.preventDefault(); adminLogin();">
+          <label>Username</label>
+          <input
+            type="text"
+            id="adminUsername"
+            placeholder="Enter admin username"
+            required
+          />
 
-        <label>Password</label>
-        <input type="password" placeholder="Enter password" />
+          <label>Password</label>
+          <input
+            type="password"
+            id="adminPassword"
+            placeholder="Enter password"
+            required
+          />
 
-        <button class="btn-primary" style="width: 100%; margin-top: 8px">
-          Login
-        </button>
+          <button class="btn-primary" style="width: 100%; margin-top: 8px">
+            Login
+          </button>
+        </form>
+
+        <!-- ERROR MESSAGE -->
+        <div id="adminError" class="admin-error">Invalid admin credentials</div>
       </div>
     </div>
 
@@ -105,6 +128,7 @@
       © 2026 AdShield AI — Fake Advertisement Detection System
     </footer>
 
+    <script src="assets/js/script.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
       AOS.init();

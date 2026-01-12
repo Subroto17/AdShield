@@ -282,3 +282,40 @@ async function submitReport() {
     btn.disabled = false;
   }
 }
+
+/* ================= ADMIN LOGIN ================= */
+
+async function adminLogin() {
+  const username = document.getElementById("adminUsername").value.trim();
+  const password = document.getElementById("adminPassword").value.trim();
+  const errorBox = document.getElementById("adminError");
+
+  errorBox.style.display = "none";
+
+  if (!username || !password) {
+    errorBox.innerText = "Please enter username and password";
+    errorBox.style.display = "block";
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      // Redirect to admin dashboard (Phase 2)
+      window.location.href = "admin-dashboard.html";
+    } else {
+      errorBox.innerText = data.message;
+      errorBox.style.display = "block";
+    }
+  } catch (err) {
+    errorBox.innerText = "Backend not reachable. Start app.py";
+    errorBox.style.display = "block";
+  }
+}

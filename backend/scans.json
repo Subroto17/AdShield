@@ -93,5 +93,21 @@
     "probability": 0.71,
     "category": "Money Scam",
     "timestamp": 1768134441
+  },
+  {
+    "text": "Earn \u20b911648 per day working from home. Limited slots available!",
+    "result": "fake",
+    "probability": 0.89,
+    "category": "Money Scam",
+    "timestamp": 1768135783
+  },
+  {
+    "text": "Invest in crypto and earn 50 per day",
+    "result": "fake",
+    "probability": 1.0,
+    "category": "crypto",
+    "timestamp": 1768135837,
+    "source": "user_report",
+    "ad_link": ""
   }
 ]
