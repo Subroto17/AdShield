@@ -201,6 +201,11 @@
         }
       }
     </style>
+    <script>
+      if (sessionStorage.getItem("isAdmin") !== "true") {
+        window.location.href = "admin.html";
+      }
+    </script>
   </head>
 
   <!-- LOGOUT MODAL -->
@@ -368,6 +373,7 @@
       }
 
       function confirmLogout() {
+        sessionStorage.removeItem("isAdmin");
         window.location.href = "admin.html";
       }
     </script>

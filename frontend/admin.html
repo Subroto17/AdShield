@@ -100,22 +100,12 @@
           <label>Username</label>
           <input
             type="text"
-            id="adminUsername"
+            id="adminUser"
             placeholder="Enter admin username"
-            required
           />
+          <input type="password" id="adminPass" placeholder="Enter password" />
 
-          <label>Password</label>
-          <input
-            type="password"
-            id="adminPassword"
-            placeholder="Enter password"
-            required
-          />
-
-          <button class="btn-primary" style="width: 100%; margin-top: 8px">
-            Login
-          </button>
+          <button class="btn-primary" onclick="adminLogin()">Login</button>
         </form>
 
         <!-- ERROR MESSAGE -->
@@ -132,6 +122,19 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
       AOS.init();
+    </script>
+    <script>
+      function adminLogin() {
+        const username = document.getElementById("adminUser").value;
+        const password = document.getElementById("adminPass").value;
+
+        if (username === "ShouryaRaj" && password === "Subroto@123") {
+          sessionStorage.setItem("isAdmin", "true");
+          window.location.href = "admin-dashboard.html";
+        } else {
+          alert("Invalid admin credentials");
+        }
+      }
     </script>
   </body>
 </html>

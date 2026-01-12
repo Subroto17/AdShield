@@ -319,3 +319,32 @@ async function adminLogin() {
     errorBox.style.display = "block";
   }
 }
+
+async function loadAdminScans() {
+  const res = await fetch("http://127.0.0.1:5000/admin/scans");
+  const data = await res.json();
+
+  const table = document.getElementById("adminTable");
+  table.innerHTML = "";
+
+  data.forEach((s) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${new Date(s.timestamp * 1000).toLocaleString()}</td>
+      <td>${s.text}</td>
+      <td style="color:${s.result === "fake" ? "#e74a3b" : "#1cc88a"}">
+        ${s.result.toUpperCase()}
+      </td>
+      <td>${s.category}</td>
+    `;
+    table.appendChild(row);
+  });
+}
+
+async function clearDashboard() {
+  if (!confirm("Clear all dashboard data?")) return;
+
+  await fetch("http://127.0.0.1:5000/admin/clear", { method: "POST" });
+  alert("Dashboard data cleared");
+  loadAdminScans();
+}

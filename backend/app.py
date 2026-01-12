@@ -212,6 +212,21 @@ def admin_login():
         }), 401
 
 
+# ================= ADMIN APIs =================
+
+@app.route("/admin/scans")
+def admin_scans():
+    scans = load_scans()
+    scans.reverse()
+    return jsonify(scans[:100])
+
+@app.route("/admin/clear", methods=["POST"])
+def clear_data():
+    with open(SCANS_FILE, "w") as f:
+        json.dump([], f)
+    return jsonify({"status": "cleared"})
+
+
 
 # ================= START =================
 if __name__ == "__main__":
