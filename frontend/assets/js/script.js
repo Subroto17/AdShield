@@ -50,7 +50,6 @@ async function predict() {
         "<b style='color:#1cc88a'>GENUINE Advertisement</b>";
     }
 
-    // Highlight risky words
     const riskyWords = [
       "lottery",
       "earn",
@@ -84,45 +83,35 @@ async function predict() {
 
 /* ================= DASHBOARD ================= */
 
-// chart instances
 let categoryChart = null;
 let timelineChart = null;
 let pieChart = null;
+let keywordChart = null; // 🔥 NEW
 
 async function loadDashboard() {
   await loadSummary();
   await loadCategories();
   await loadTimeline();
   await loadPie();
-  await loadRecentScans();
 }
 
-/* -------- SUMMARY (USER + ADMIN FIX) -------- */
+/* -------- SUMMARY -------- */
 async function loadSummary() {
   const res = await fetch(`${API_BASE}/dashboard/summary`);
   const data = await res.json();
 
-  // USER DASHBOARD
   if (el("totalScans")) el("totalScans").innerText = data.total_scans;
   if (el("fakeCount")) el("fakeCount").innerText = data.fake;
   if (el("genuineCount")) el("genuineCount").innerText = data.genuine;
   if (el("topCategory"))
     el("topCategory").innerText = data.top_category.toUpperCase();
 
-  // ✅ ADMIN DASHBOARD FIX
+  // ADMIN STATS
   if (el("adminTotal")) {
     el("adminTotal").innerText = data.total_scans;
     el("adminFake").innerText = data.fake;
     el("adminGenuine").innerText = data.genuine;
     el("adminTopCategory").innerText = data.top_category;
-  }
-
-  if (el("insightText")) {
-    el("insightText").innerText =
-      data.fake > data.genuine
-        ? "⚠️ High scam activity detected. Most scams belong to " +
-          data.top_category
-        : "✅ System healthy. Majority of advertisements are genuine.";
   }
 }
 
@@ -147,11 +136,7 @@ async function loadCategories() {
         },
       ],
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-    },
+    options: { responsive: true, maintainAspectRatio: false },
   });
 }
 
@@ -183,10 +168,7 @@ async function loadTimeline() {
         },
       ],
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-    },
+    options: { responsive: true, maintainAspectRatio: false },
   });
 }
 
@@ -210,57 +192,80 @@ async function loadPie() {
         },
       ],
     },
+    options: { responsive: true, maintainAspectRatio: false },
+  });
+}
+
+/* ================= 🔥 KEYWORD TRENDS ================= */
+
+async function loadKeywordTrends() {
+  if (!el("keywordChart")) return;
+
+  const res = await fetch(`${API_BASE}/admin/keywords`);
+  const data = await res.json();
+
+  if (keywordChart) keywordChart.destroy();
+
+  keywordChart = new Chart(el("keywordChart"), {
+    type: "bar",
+    data: {
+      labels: data.labels,
+      datasets: [
+        {
+          label: "Frequency",
+          data: data.counts,
+          backgroundColor: "#f6c23e",
+        },
+      ],
+    },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
     },
   });
 }
 
-/* -------- RECENT SCANS (USER DASHBOARD) -------- */
-async function loadRecentScans() {
-  if (!el("recentScans")) return;
+/* ================= REPORT SCAM ================= */
 
-  const res = await fetch(`${API_BASE}/dashboard/recent`);
-  const scans = await res.json();
+async function submitReport() {
+  const scamType = el("scamType").value;
+  const adLink = el("adLink").value;
+  const description = el("description").value.trim();
 
-  const tbody = el("recentScans");
-  tbody.innerHTML = "";
-
-  if (scans.length === 0) {
-    tbody.innerHTML = "<tr><td colspan='4'>No scans yet</td></tr>";
+  if (!description) {
+    alert("Please describe the suspicious advertisement.");
     return;
   }
 
-  scans.forEach((s) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${s.text}</td>
-      <td style="color:${s.result === "fake" ? "#e74a3b" : "#1cc88a"}">
-        ${s.result.toUpperCase()}
-      </td>
-      <td>${s.category}</td>
-      <td>${Math.round(s.probability * 100)}%</td>
-    `;
-    tbody.appendChild(row);
-  });
+  try {
+    const res = await fetch(`${API_BASE}/report`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        scam_type: scamType,
+        ad_link: adLink,
+        description: description,
+      }),
+    });
+
+    if (res.ok) {
+      alert("✅ Report submitted successfully!");
+      el("reportForm").reset();
+    } else {
+      alert("❌ Failed to submit report");
+    }
+  } catch {
+    alert("Backend not reachable. Start app.py");
+  }
 }
 
 /* ================= ADMIN ================= */
 
-/* -------- ADMIN LOGIN -------- */
 async function adminLogin() {
   const username = el("adminUsername").value.trim();
   const password = el("adminPassword").value.trim();
   const errorBox = el("adminError");
-
-  errorBox.style.display = "none";
-
-  if (!username || !password) {
-    errorBox.innerText = "Please enter username and password";
-    errorBox.style.display = "block";
-    return;
-  }
 
   try {
     const res = await fetch(`${API_BASE}/admin/login`, {
@@ -282,7 +287,7 @@ async function adminLogin() {
   }
 }
 
-/* -------- ADMIN SCANS FIX -------- */
+/* -------- ADMIN LOAD -------- */
 async function loadAdminScans() {
   if (!el("adminTable")) return;
 
@@ -292,26 +297,18 @@ async function loadAdminScans() {
   const table = el("adminTable");
   table.innerHTML = "";
 
-  if (scans.length === 0) {
-    table.innerHTML = "<tr><td colspan='4'>No scans available</td></tr>";
-    return;
-  }
-
   scans.forEach((s) => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${new Date(s.timestamp * 1000).toLocaleString()}</td>
       <td>${s.text}</td>
-      <td style="color:${s.result === "fake" ? "#e74a3b" : "#1cc88a"}">
-        ${s.result.toUpperCase()}
-      </td>
+      <td>${s.result.toUpperCase()}</td>
       <td>${s.category}</td>
     `;
     table.appendChild(row);
   });
 }
 
-/* -------- ADMIN REPORTS -------- */
 async function loadAdminReports() {
   if (!el("adminReportsTable")) return;
 
@@ -321,34 +318,17 @@ async function loadAdminReports() {
   const table = el("adminReportsTable");
   table.innerHTML = "";
 
-  if (reports.length === 0) {
-    table.innerHTML = "<tr><td colspan='4'>No reports</td></tr>";
-    return;
-  }
-
   reports.forEach((r) => {
     const row = document.createElement("tr");
-
-    const color =
-      r.status === "approved"
-        ? "#1cc88a"
-        : r.status === "rejected"
-        ? "#e74a3b"
-        : "#f6c23e";
-
     row.innerHTML = `
       <td>${r.text}</td>
       <td>${r.category}</td>
-      <td style="color:${color};font-weight:600">
-        ${r.status.toUpperCase()}
-      </td>
+      <td>${r.status.toUpperCase()}</td>
       <td>
         ${
           r.status === "pending"
-            ? `
-          <button onclick="approveReport(${r.id})">Approve</button>
-          <button onclick="rejectReport(${r.id})">Reject</button>
-        `
+            ? `<button onclick="approveReport(${r.id})">Approve</button>
+               <button onclick="rejectReport(${r.id})">Reject</button>`
             : "-"
         }
       </td>
@@ -368,21 +348,14 @@ async function rejectReport(id) {
   loadAdminReports();
 }
 
-async function clearDashboard() {
-  if (!confirm("Clear all scan data?")) return;
-  await fetch(`${API_BASE}/admin/clear`, { method: "POST" });
-  loadAdminScans();
-  loadSummary();
-}
-
 /* -------- AUTO LOAD -------- */
 if (window.location.pathname.includes("dashboard.html")) {
   loadDashboard();
-  setInterval(loadDashboard, 20000);
 }
 
 if (window.location.pathname.includes("admin-dashboard.html")) {
   loadSummary();
   loadAdminScans();
   loadAdminReports();
+  loadKeywordTrends(); // 🔥 FINAL CALL
 }

@@ -117,21 +117,10 @@
         font-weight: 600;
       }
 
-      .info-box {
-        background: #f1f5ff;
-        padding: 15px;
-        border-radius: 10px;
-        color: #374151;
-        margin-bottom: 20px;
-      }
-
       /* LOGOUT MODAL */
       .modal-overlay {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        inset: 0;
         background: rgba(0, 0, 0, 0.45);
         display: none;
         justify-content: center;
@@ -146,7 +135,6 @@
         width: 100%;
         border-radius: 16px;
         text-align: center;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
       }
 
       .modal-actions {
@@ -155,23 +143,18 @@
         margin-top: 25px;
       }
 
-      .btn-cancel {
+      .btn-cancel,
+      .btn-logout {
         flex: 1;
-        background: #e5e7eb;
-        border: none;
         padding: 10px;
         border-radius: 8px;
+        border: none;
         cursor: pointer;
       }
 
       .btn-logout {
-        flex: 1;
         background: #e74a3b;
         color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 8px;
-        cursor: pointer;
       }
     </style>
   </head>
@@ -180,33 +163,18 @@
     <!-- NAVBAR -->
     <div class="navbar">
       <a href="index.html" class="logo"><b>AdShield AI</b></a>
-
       <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="scan.html">Scan</a>
         <a href="dashboard.html">Dashboard</a>
-
-        <button
-          onclick="openLogoutModal()"
-          style="
-            background: #e74a3b;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-          "
-        >
-          Logout
-        </button>
+        <button onclick="openLogoutModal()" class="danger-btn">Logout</button>
       </div>
     </div>
 
     <!-- DASHBOARD -->
     <div class="admin-container" data-aos="fade-up">
       <div class="admin-title">Admin Dashboard</div>
-      <div class="admin-subtitle">Monitoring, moderation & system control</div>
+      <div class="admin-subtitle">Monitoring & Moderation Panel</div>
 
       <!-- STATS -->
       <div class="stats-grid">
@@ -216,11 +184,11 @@
         </div>
         <div class="stat-card">
           <h3>Fake Ads</h3>
-          <span id="adminFake" style="color: #e74a3b">--</span>
+          <span id="adminFake" style="color:#e74a3b">--</span>
         </div>
         <div class="stat-card">
           <h3>Genuine Ads</h3>
-          <span id="adminGenuine" style="color: #1cc88a">--</span>
+          <span id="adminGenuine" style="color:#1cc88a">--</span>
         </div>
         <div class="stat-card">
           <h3>Top Scam Category</h3>
@@ -230,23 +198,14 @@
 
       <!-- TABS -->
       <div class="tabs">
-        <button class="tab-btn active" onclick="openAdminTab('scans')">
-          Scanned Ads
-        </button>
-        <button class="tab-btn" onclick="openAdminTab('reports')">
-          User Reports
-        </button>
-        <button class="tab-btn" onclick="openAdminTab('keywords')">
-          Keyword Trends
-        </button>
-        <button class="tab-btn" onclick="openAdminTab('control')">
-          System Control
-        </button>
+        <button class="tab-btn active" onclick="openAdminTab('scans', this)">Scanned Ads</button>
+        <button class="tab-btn" onclick="openAdminTab('reports', this)">User Reports</button>
+        <button class="tab-btn" onclick="openAdminTab('keywords', this)">Keyword Trends</button>
+        <button class="tab-btn" onclick="openAdminTab('control', this)">System Control</button>
       </div>
 
       <!-- SCANS -->
       <div id="scans" class="tab-content active">
-        <h3>Scanned Advertisements</h3>
         <table>
           <thead>
             <tr>
@@ -257,16 +216,13 @@
             </tr>
           </thead>
           <tbody id="adminTable">
-            <tr>
-              <td colspan="4">Loading...</td>
-            </tr>
+            <tr><td colspan="4">Loading...</td></tr>
           </tbody>
         </table>
       </div>
 
       <!-- REPORTS -->
       <div id="reports" class="tab-content">
-        <h3>User Submitted Reports</h3>
         <table>
           <thead>
             <tr>
@@ -277,41 +233,30 @@
             </tr>
           </thead>
           <tbody id="adminReportsTable">
-            <tr>
-              <td colspan="4">Loading...</td>
-            </tr>
+            <tr><td colspan="4">Loading...</td></tr>
           </tbody>
         </table>
       </div>
 
       <!-- KEYWORDS -->
       <div id="keywords" class="tab-content">
-        <h3>Suspicious Keyword Trends</h3>
-        <p>Analyzed from verified fake advertisements.</p>
+        <p>Keyword trends derived from fake advertisements.</p>
+        <canvas id="keywordChart" height="120"></canvas>
       </div>
 
       <!-- CONTROL -->
       <div id="control" class="tab-content">
-        <h3>System Control</h3>
-        <div class="info-box">
-          ⚠️ To retrain the ML model, stop the server and run
-          <b>train_model.py</b>.
-        </div>
-        <button class="danger-btn" onclick="clearDashboard()">
-          Clear All Scan Data
-        </button>
+        <p>⚠️ Stop server & run <b>train_model.py</b> to retrain model.</p>
+        <button class="danger-btn" onclick="clearDashboard()">Clear All Data</button>
       </div>
     </div>
 
     <!-- LOGOUT MODAL -->
     <div id="logoutModal" class="modal-overlay">
       <div class="modal-box">
-        <h3>Confirm Logout</h3>
-        <p>Are you sure you want to logout?</p>
+        <h3>Logout?</h3>
         <div class="modal-actions">
-          <button class="btn-cancel" onclick="closeLogoutModal()">
-            Cancel
-          </button>
+          <button class="btn-cancel" onclick="closeLogoutModal()">Cancel</button>
           <button class="btn-logout" onclick="confirmLogout()">Logout</button>
         </div>
       </div>
@@ -320,31 +265,25 @@
     <footer>© 2026 AdShield AI — Admin Panel</footer>
 
     <script src="assets/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script>
       AOS.init();
 
-      function openAdminTab(id) {
-        document
-          .querySelectorAll(".tab-btn")
-          .forEach((b) => b.classList.remove("active"));
-        document
-          .querySelectorAll(".tab-content")
-          .forEach((c) => c.classList.remove("active"));
-
-        event.target.classList.add("active");
+      function openAdminTab(id, btn) {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+        btn.classList.add("active");
         document.getElementById(id).classList.add("active");
       }
 
       function openLogoutModal() {
         document.getElementById("logoutModal").style.display = "flex";
       }
-
       function closeLogoutModal() {
         document.getElementById("logoutModal").style.display = "none";
       }
-
       function confirmLogout() {
         sessionStorage.removeItem("isAdmin");
         window.location.href = "admin.html";

@@ -10,6 +10,21 @@
 
     <!-- Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <!-- 🔥 TEMP FIX FOR HORIZONTAL SCROLL -->
+    <style>
+      html,
+      body {
+        overflow-x: hidden;
+        width: 100%;
+      }
+
+      /* Extra safety for hero section */
+      .hero {
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+    </style>
   </head>
 
   <body>
@@ -37,8 +52,11 @@
         ads.
       </p>
 
-      <a href="scan.html" class="cta-btn" data-aos="zoom-in">Start Scanning</a>
+      <a href="scan.html" class="cta-btn" data-aos="zoom-in">
+        Start Scanning
+      </a>
 
+      <!-- Background shape (problem creator, now controlled) -->
       <div class="hero-shape"></div>
     </section>
 

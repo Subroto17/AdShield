@@ -38,5 +38,29 @@
     "category": "Shopping Scam",
     "timestamp": 1768307998,
     "source": "system"
+  },
+  {
+    "text": "This is fake",
+    "result": "fake",
+    "probability": 0.51,
+    "category": "General Scam",
+    "timestamp": 1768309060,
+    "source": "system"
+  },
+  {
+    "text": "Fake",
+    "result": "fake",
+    "probability": 0.51,
+    "category": "General Scam",
+    "timestamp": 1768309529,
+    "source": "system"
+  },
+  {
+    "text": "Get free mobile phone by registering within 12 minutes!",
+    "result": "fake",
+    "probability": 0.76,
+    "category": "Shopping Scam",
+    "timestamp": 1768311633,
+    "source": "system"
   }
 ]

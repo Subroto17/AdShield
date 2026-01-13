@@ -95,6 +95,7 @@ def predict():
 def summary():
     scans = read_json(SCANS_FILE)
     cats = Counter(s["category"] for s in scans)
+
     return jsonify({
         "total_scans": len(scans),
         "fake": sum(1 for s in scans if s["result"] == "fake"),
@@ -106,15 +107,20 @@ def summary():
 def categories():
     scans = read_json(SCANS_FILE)
     c = Counter(s["category"] for s in scans)
-    return jsonify({"labels": list(c.keys()), "counts": list(c.values())})
+    return jsonify({
+        "labels": list(c.keys()),
+        "counts": list(c.values())
+    })
 
 @app.route("/dashboard/timeline")
 def timeline():
     scans = read_json(SCANS_FILE)
     t = defaultdict(lambda: {"fake": 0, "genuine": 0})
+
     for s in scans:
         d = time.strftime("%Y-%m-%d", time.localtime(s["timestamp"]))
         t[d][s["result"]] += 1
+
     dates = sorted(t.keys())
     return jsonify({
         "dates": dates,
@@ -122,25 +128,37 @@ def timeline():
         "genuine": [t[d]["genuine"] for d in dates]
     })
 
-# ================= REPORT (USER) =================
+# ================= USER REPORT =================
 @app.route("/report", methods=["POST"])
 def report():
     data = request.json
+
+    description = data.get("description", "").strip()
+    scam_type = data.get("scam_type", "Unknown")
+    ad_link = data.get("ad_link", "")
+
+    if not description:
+        return jsonify({"success": False, "message": "Description required"}), 400
+
     reports = read_json(REPORTS_FILE)
 
     reports.append({
         "id": int(time.time()),
-        "text": data.get("description", ""),
-        "category": data.get("scam_type", ""),
-        "link": data.get("ad_link", ""),
+        "text": description[:300],
+        "category": scam_type,
+        "link": ad_link,
         "timestamp": int(time.time()),
         "status": "pending"
     })
 
     write_json(REPORTS_FILE, reports)
-    return jsonify({"message": "Report submitted for admin review"})
 
-# ================= ADMIN =================
+    return jsonify({
+        "success": True,
+        "message": "Report submitted successfully"
+    })
+
+# ================= ADMIN LOGIN =================
 @app.route("/admin/login", methods=["POST"])
 def admin_login():
     data = request.json
@@ -148,16 +166,17 @@ def admin_login():
         return jsonify({"success": True})
     return jsonify({"success": False}), 401
 
-@app.route("/admin/reports")
-def admin_reports():
-    return jsonify(read_json(REPORTS_FILE))
-
-# 🔥🔥🔥 THIS IS THE FIX 🔥🔥🔥
+# ================= ADMIN SCANS (FIX) =================
 @app.route("/admin/scans", methods=["GET"])
 def admin_scans():
     scans = read_json(SCANS_FILE)
     scans = sorted(scans, key=lambda x: x["timestamp"], reverse=True)
     return jsonify(scans)
+
+# ================= ADMIN REPORTS =================
+@app.route("/admin/reports")
+def admin_reports():
+    return jsonify(read_json(REPORTS_FILE))
 
 @app.route("/admin/approve/<int:rid>", methods=["POST"])
 def approve_report(rid):
@@ -193,6 +212,29 @@ def reject_report(rid):
 def clear_scans():
     write_json(SCANS_FILE, [])
     return jsonify({"status": "cleared"})
+
+# ================= KEYWORD TRENDS =================
+@app.route("/admin/keywords")
+def keyword_trends():
+    scans = read_json(SCANS_FILE)
+
+    keywords = []
+    stopwords = {
+        "the","is","and","to","of","for","a","in","on","with",
+        "your","you","from","this","that","by"
+    }
+
+    for s in scans:
+        if s["result"] == "fake":
+            words = re.findall(r"[a-zA-Z]{4,}", s["text"].lower())
+            keywords.extend([w for w in words if w not in stopwords])
+
+    counts = Counter(keywords).most_common(10)
+
+    return jsonify({
+        "labels": [k for k, _ in counts],
+        "counts": [v for _, v in counts]
+    })
 
 # ================= START =================
 if __name__ == "__main__":
