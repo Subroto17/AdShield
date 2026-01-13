@@ -4,110 +4,39 @@
     "result": "genuine",
     "probability": 0.93,
     "category": "General Scam",
-    "timestamp": 1767878853
+    "timestamp": 1768307964,
+    "source": "system"
   },
   {
-    "text": "Order your daily essentials easily through our mobile app.",
-    "result": "genuine",
-    "probability": 0.93,
-    "category": "General Scam",
-    "timestamp": 1767878864
-  },
-  {
-    "text": "Get free mobile phone by registering within 12 minutes!",
+    "text": "Get free smartwatch by registering within 35 minutes!",
     "result": "fake",
-    "probability": 0.76,
+    "probability": 0.8,
     "category": "Shopping Scam",
-    "timestamp": 1767878886
+    "timestamp": 1768307973,
+    "source": "system"
   },
   {
-    "text": "Investment scheme offering 153% guaranteed returns. Join fast!",
+    "text": "Hurry! Crypto plan doubles your money in 40 days. Register now.",
     "result": "fake",
     "probability": 0.9,
     "category": "Money Scam",
-    "timestamp": 1767878911
+    "timestamp": 1768307981,
+    "source": "system"
   },
   {
-    "text": "Your KYC is expired. Update now to avoid account block.",
-    "result": "fake",
-    "probability": 0.94,
-    "category": "General Scam",
-    "timestamp": 1767878920
-  },
-  {
-    "text": "Earn \u20b918335 per day working from home. Limited slots available!",
-    "result": "fake",
-    "probability": 0.89,
-    "category": "Money Scam",
-    "timestamp": 1767880141
-  },
-  {
-    "text": "Hurry! Crypto plan doubles your money in 25 days. Register now.",
-    "result": "fake",
-    "probability": 0.9,
-    "category": "Money Scam",
-    "timestamp": 1767971227
-  },
-  {
-    "text": "Congratulations! You have won a gift card. Click here to claim now.",
-    "result": "fake",
-    "probability": 0.92,
-    "category": "General Scam",
-    "timestamp": 1767971311
-  },
-  {
-    "text": "New batch starting soon for MBA. Enroll now.",
+    "text": "Online registration open for the upcoming cultural event.",
     "result": "genuine",
-    "probability": 0.92,
-    "category": "General Scam",
-    "timestamp": 1767971322
-  },
-  {
-    "text": "sex never cause cancer",
-    "result": "fake",
-    "probability": 0.51,
-    "category": "General Scam",
-    "timestamp": 1767971402
-  },
-  {
-    "text": "Click on the link to done your KYC.",
-    "result": "fake",
-    "probability": 1.0,
-    "category": "kyc",
-    "timestamp": 1768051425,
-    "source": "user_report",
-    "ad_link": ""
-  },
-  {
-    "text": "Shop using this link and get a chance to win IPHONE 17 PRO",
-    "result": "fake",
-    "probability": 1.0,
-    "category": "shopping",
-    "timestamp": 1768052038,
-    "source": "user_report",
-    "ad_link": ""
-  },
-  {
-    "text": "Installation of telecom tower in your land and get money",
-    "result": "fake",
-    "probability": 0.71,
-    "category": "Money Scam",
-    "timestamp": 1768134441
-  },
-  {
-    "text": "Earn \u20b911648 per day working from home. Limited slots available!",
-    "result": "fake",
     "probability": 0.89,
-    "category": "Money Scam",
-    "timestamp": 1768135783
+    "category": "General Scam",
+    "timestamp": 1768307988,
+    "source": "system"
   },
   {
-    "text": "Invest in crypto and earn 50 per day",
-    "result": "fake",
-    "probability": 1.0,
-    "category": "crypto",
-    "timestamp": 1768135837,
-    "source": "user_report",
-    "ad_link": ""
+    "text": "Buy electronics with discount up to 211%. Limited offer.",
+    "result": "genuine",
+    "probability": 0.87,
+    "category": "Shopping Scam",
+    "timestamp": 1768307998,
+    "source": "system"
   }
 ]

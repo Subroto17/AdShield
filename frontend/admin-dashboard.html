@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard - AdShield AI</title>
 
+    <!-- PROTECT PAGE -->
+    <script>
+      if (sessionStorage.getItem("isAdmin") !== "true") {
+        window.location.href = "admin.html";
+      }
+    </script>
+
     <link rel="stylesheet" href="assets/css/style.css" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
 
@@ -18,7 +25,6 @@
       .admin-title {
         font-size: 28px;
         font-weight: 700;
-        margin-bottom: 5px;
       }
 
       .admin-subtitle {
@@ -43,7 +49,6 @@
       .stat-card h3 {
         font-size: 14px;
         color: var(--text-light);
-        margin-bottom: 8px;
       }
 
       .stat-card span {
@@ -109,6 +114,7 @@
         padding: 12px 20px;
         border-radius: 10px;
         cursor: pointer;
+        font-weight: 600;
       }
 
       .info-box {
@@ -116,9 +122,10 @@
         padding: 15px;
         border-radius: 10px;
         color: #374151;
+        margin-bottom: 20px;
       }
-      /* ================= LOGOUT MODAL ================= */
 
+      /* LOGOUT MODAL */
       .modal-overlay {
         position: fixed;
         top: 0;
@@ -135,44 +142,26 @@
       .modal-box {
         background: white;
         padding: 30px;
-        width: 100%;
         max-width: 380px;
+        width: 100%;
         border-radius: 16px;
         text-align: center;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-        animation: scaleIn 0.3s ease;
-      }
-
-      .modal-box h3 {
-        margin-bottom: 10px;
-        color: #111;
-      }
-
-      .modal-box p {
-        color: #555;
-        font-size: 15px;
-        margin-bottom: 25px;
       }
 
       .modal-actions {
         display: flex;
-        justify-content: space-between;
         gap: 15px;
+        margin-top: 25px;
       }
 
       .btn-cancel {
         flex: 1;
         background: #e5e7eb;
-        color: #111;
         border: none;
         padding: 10px;
         border-radius: 8px;
         cursor: pointer;
-        font-weight: 600;
-      }
-
-      .btn-cancel:hover {
-        background: #d1d5db;
       }
 
       .btn-logout {
@@ -183,56 +172,20 @@
         padding: 10px;
         border-radius: 8px;
         cursor: pointer;
-        font-weight: 600;
-      }
-
-      .btn-logout:hover {
-        background: #d63c2f;
-      }
-
-      @keyframes scaleIn {
-        from {
-          transform: scale(0.9);
-          opacity: 0;
-        }
-        to {
-          transform: scale(1);
-          opacity: 1;
-        }
       }
     </style>
-    <script>
-      if (sessionStorage.getItem("isAdmin") !== "true") {
-        window.location.href = "admin.html";
-      }
-    </script>
   </head>
 
-  <!-- LOGOUT MODAL -->
-  <div id="logoutModal" class="modal-overlay">
-    <div class="modal-box">
-      <h3>Confirm Logout</h3>
-      <p>Are you sure you want to logout from Admin Panel?</p>
-
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeLogoutModal()">Cancel</button>
-        <button class="btn-logout" onclick="confirmLogout()">Logout</button>
-      </div>
-    </div>
-  </div>
-
   <body>
-    <!-- NAVBAR -->
     <!-- NAVBAR -->
     <div class="navbar">
       <a href="index.html" class="logo"><b>AdShield AI</b></a>
 
       <div class="nav-links">
-        <!-- <a href="index.html">Home</a>
+        <a href="index.html">Home</a>
         <a href="scan.html">Scan</a>
-        <a href="dashboard.html">Dashboard</a> -->
+        <a href="dashboard.html">Dashboard</a>
 
-        <!-- LOGOUT BUTTON -->
         <button
           onclick="openLogoutModal()"
           style="
@@ -250,14 +203,12 @@
       </div>
     </div>
 
-    <!-- ADMIN DASHBOARD -->
+    <!-- DASHBOARD -->
     <div class="admin-container" data-aos="fade-up">
       <div class="admin-title">Admin Dashboard</div>
-      <div class="admin-subtitle">
-        System monitoring & administrative controls
-      </div>
+      <div class="admin-subtitle">Monitoring, moderation & system control</div>
 
-      <!-- OVERVIEW STATS -->
+      <!-- STATS -->
       <div class="stats-grid">
         <div class="stat-card">
           <h3>Total Scans</h3>
@@ -293,9 +244,7 @@
         </button>
       </div>
 
-      <!-- TAB CONTENTS -->
-
-      <!-- Scanned Ads -->
+      <!-- SCANS -->
       <div id="scans" class="tab-content active">
         <h3>Scanned Advertisements</h3>
         <table>
@@ -307,44 +256,76 @@
               <th>Category</th>
             </tr>
           </thead>
-          <tbody id="adminScansTable">
+          <tbody id="adminTable">
             <tr>
-              <td colspan="4">Data will load in Phase 3</td>
+              <td colspan="4">Loading...</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Reports -->
+      <!-- REPORTS -->
       <div id="reports" class="tab-content">
         <h3>User Submitted Reports</h3>
-        <p>Pending user scam reports will appear here.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Text</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminReportsTable">
+            <tr>
+              <td colspan="4">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      <!-- Keywords -->
+      <!-- KEYWORDS -->
       <div id="keywords" class="tab-content">
         <h3>Suspicious Keyword Trends</h3>
-        <p>Keyword analysis will be displayed here.</p>
+        <p>Analyzed from verified fake advertisements.</p>
       </div>
 
-      <!-- Control -->
+      <!-- CONTROL -->
       <div id="control" class="tab-content">
         <h3>System Control</h3>
         <div class="info-box">
-          ⚠️ To retrain the model, stop the server and run
+          ⚠️ To retrain the ML model, stop the server and run
           <b>train_model.py</b>.
         </div>
+        <button class="danger-btn" onclick="clearDashboard()">
+          Clear All Scan Data
+        </button>
+      </div>
+    </div>
 
-        <br />
-
-        <button class="danger-btn">Clear All Scan Data</button>
+    <!-- LOGOUT MODAL -->
+    <div id="logoutModal" class="modal-overlay">
+      <div class="modal-box">
+        <h3>Confirm Logout</h3>
+        <p>Are you sure you want to logout?</p>
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeLogoutModal()">
+            Cancel
+          </button>
+          <button class="btn-logout" onclick="confirmLogout()">Logout</button>
+        </div>
       </div>
     </div>
 
     <footer>© 2026 AdShield AI — Admin Panel</footer>
 
+    <script src="assets/js/script.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
     <script>
-      function openAdminTab(tabId) {
+      AOS.init();
+
+      function openAdminTab(id) {
         document
           .querySelectorAll(".tab-btn")
           .forEach((b) => b.classList.remove("active"));
@@ -353,15 +334,7 @@
           .forEach((c) => c.classList.remove("active"));
 
         event.target.classList.add("active");
-        document.getElementById(tabId).classList.add("active");
-      }
-
-      function logoutAdmin() {
-        // Optional confirmation
-        const confirmLogout = confirm("Are you sure you want to logout?");
-        if (confirmLogout) {
-          window.location.href = "admin.html";
-        }
+        document.getElementById(id).classList.add("active");
       }
 
       function openLogoutModal() {
@@ -376,11 +349,6 @@
         sessionStorage.removeItem("isAdmin");
         window.location.href = "admin.html";
       }
-    </script>
-
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-      AOS.init();
     </script>
   </body>
 </html>

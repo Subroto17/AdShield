@@ -511,3 +511,35 @@ footer {
     font-size: 14px;
   }
 }
+
+/* ===== ADMIN REPORT ACTION BUTTONS ===== */
+
+.btn-approve {
+  background: #1cc88a;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 6px;
+  font-size: 13px;
+}
+
+.btn-approve:hover {
+  background: #17a673;
+}
+
+.btn-reject {
+  background: #e74a3b;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-reject:hover {
+  background: #d63c2f;
+}
+

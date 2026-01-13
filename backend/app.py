@@ -13,220 +13,186 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
 VECTORIZER_PATH = os.path.join(BASE_DIR, "vectorizer.pkl")
 SCANS_FILE = os.path.join(BASE_DIR, "scans.json")
+REPORTS_FILE = os.path.join(BASE_DIR, "reports.json")
 
-# ================= LOAD MODEL (SAFE) =================
+# ================= LOAD MODEL =================
 try:
     model = joblib.load(MODEL_PATH)
     vectorizer = joblib.load(VECTORIZER_PATH)
     print("✅ Model & vectorizer loaded successfully")
-except Exception as e:
+except Exception:
     print("❌ Model files corrupted or missing.")
     print("👉 Run: python train_model.py")
-    raise e
+    raise
 
-# ================= STORAGE HELPERS =================
-def load_scans():
-    if not os.path.exists(SCANS_FILE):
+# ================= FILE HELPERS =================
+def read_json(path):
+    if not os.path.exists(path):
         return []
     try:
-        with open(SCANS_FILE, "r", encoding="utf-8") as f:
+        with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     except:
         return []
 
-def save_scans(scans):
-    with open(SCANS_FILE, "w", encoding="utf-8") as f:
-        json.dump(scans, f, indent=2)
+def write_json(path, data):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
 
-# ================= CATEGORY LOGIC =================
+# ================= CATEGORY =================
 def get_category(text):
     t = text.lower()
-    if any(w in t for w in ["lottery", "earn", "money", "investment", "profit"]):
+    if any(w in t for w in ["lottery", "earn", "money", "investment"]):
         return "Money Scam"
-    if any(w in t for w in ["job", "salary", "hiring", "vacancy"]):
+    if any(w in t for w in ["job", "salary", "hiring"]):
         return "Job Scam"
-    if any(w in t for w in ["free", "offer", "voucher", "discount"]):
+    if any(w in t for w in ["free", "offer", "discount"]):
         return "Shopping Scam"
-    if any(w in t for w in ["crypto", "bitcoin", "trading"]):
+    if any(w in t for w in ["crypto", "bitcoin"]):
         return "Crypto Scam"
     return "General Scam"
 
-# ================= RULE-BASED OVERRIDE =================
+# ================= RULE BASED =================
 def rule_based_fake(text):
     t = text.lower()
-
-    scam_keywords = [
-        "lottery", "guaranteed", "double your money",
-        "earn money fast", "free money", "quick cash"
-    ]
-
-    if any(word in t for word in scam_keywords):
-        return True
-
-    # Unrealistic numbers
     if re.search(r"\b\d{8,}\b", t):
         return True
-
-    # Low pay + huge return
-    nums = [int(n) for n in re.findall(r"\d+", t)]
-    if len(nums) >= 2 and min(nums) < 1000 and max(nums) > 100000:
+    if any(w in t for w in ["lottery", "guaranteed", "double money"]):
         return True
-
     return False
 
-# ================= SCAN API =================
+# ================= PREDICT =================
 @app.route("/predict", methods=["POST"])
 def predict():
-    data = request.json
-    text = data.get("text", "").strip()
-
+    text = request.json.get("text", "").strip()
     if not text:
         return jsonify({"error": "Empty input"}), 400
 
     forced_fake = rule_based_fake(text)
 
     vec = vectorizer.transform([text])
-    ml_pred = int(model.predict(vec)[0])
-    ml_prob = float(model.predict_proba(vec)[0][ml_pred])
+    pred = int(model.predict(vec)[0])
+    prob = float(model.predict_proba(vec)[0][pred])
 
-    if forced_fake:
-        result = "fake"
-        probability = max(ml_prob, 0.9)
-    else:
-        result = "fake" if ml_pred == 1 else "genuine"
-        probability = ml_prob
+    result = "fake" if forced_fake or pred == 1 else "genuine"
+    probability = max(prob, 0.9) if forced_fake else prob
 
-    scans = load_scans()
+    scans = read_json(SCANS_FILE)
     scans.append({
         "text": text[:200],
         "result": result,
         "probability": round(probability, 2),
         "category": get_category(text),
-        "timestamp": int(time.time())
+        "timestamp": int(time.time()),
+        "source": "system"
     })
-    save_scans(scans)
+    write_json(SCANS_FILE, scans)
 
-    return jsonify({
-        "result": result,
-        "probability": probability
-    })
+    return jsonify({"result": result, "probability": probability})
 
-# ================= DASHBOARD: SUMMARY =================
+# ================= DASHBOARD =================
 @app.route("/dashboard/summary")
-def dashboard_summary():
-    scans = load_scans()
-
-    total = len(scans)
-    fake = sum(1 for s in scans if s["result"] == "fake")
-    genuine = sum(1 for s in scans if s["result"] == "genuine")
-
-    categories = Counter(s["category"] for s in scans)
-    top_category = categories.most_common(1)[0][0] if categories else "-"
-
+def summary():
+    scans = read_json(SCANS_FILE)
+    cats = Counter(s["category"] for s in scans)
     return jsonify({
-        "total_scans": total,
-        "fake": fake,
-        "genuine": genuine,
-        "top_category": top_category
+        "total_scans": len(scans),
+        "fake": sum(1 for s in scans if s["result"] == "fake"),
+        "genuine": sum(1 for s in scans if s["result"] == "genuine"),
+        "top_category": cats.most_common(1)[0][0] if cats else "-"
     })
 
-# ================= DASHBOARD: CATEGORY BAR =================
 @app.route("/dashboard/categories")
-def dashboard_categories():
-    scans = load_scans()
-    categories = Counter(s["category"] for s in scans)
+def categories():
+    scans = read_json(SCANS_FILE)
+    c = Counter(s["category"] for s in scans)
+    return jsonify({"labels": list(c.keys()), "counts": list(c.values())})
 
-    return jsonify({
-        "labels": list(categories.keys()),
-        "counts": list(categories.values())
-    })
-
-# ================= DASHBOARD: TIMELINE =================
 @app.route("/dashboard/timeline")
-def dashboard_timeline():
-    scans = load_scans()
-    timeline = defaultdict(lambda: {"fake": 0, "genuine": 0})
-
+def timeline():
+    scans = read_json(SCANS_FILE)
+    t = defaultdict(lambda: {"fake": 0, "genuine": 0})
     for s in scans:
-        date = time.strftime("%Y-%m-%d", time.localtime(s["timestamp"]))
-        timeline[date][s["result"]] += 1
-
-    dates = sorted(timeline.keys())
+        d = time.strftime("%Y-%m-%d", time.localtime(s["timestamp"]))
+        t[d][s["result"]] += 1
+    dates = sorted(t.keys())
     return jsonify({
         "dates": dates,
-        "fake": [timeline[d]["fake"] for d in dates],
-        "genuine": [timeline[d]["genuine"] for d in dates]
+        "fake": [t[d]["fake"] for d in dates],
+        "genuine": [t[d]["genuine"] for d in dates]
     })
 
-# ================= DASHBOARD: RECENT SCANS =================
-@app.route("/dashboard/recent")
-def dashboard_recent():
-    scans = load_scans()[-10:][::-1]
-    return jsonify(scans)
-
-# ================= REPORT SCAM API =================
+# ================= REPORT (USER) =================
 @app.route("/report", methods=["POST"])
-def report_scam():
+def report():
     data = request.json
+    reports = read_json(REPORTS_FILE)
 
-    scam_type = data.get("scam_type", "").strip()
-    ad_link = data.get("ad_link", "").strip()
-    description = data.get("description", "").strip()
-
-    if not scam_type or not description:
-        return jsonify({"error": "Invalid report data"}), 400
-
-    scans = load_scans()
-
-    scans.append({
-        "text": description,
-        "result": "fake",
-        "probability": 1.0,
-        "category": scam_type.lower(),
+    reports.append({
+        "id": int(time.time()),
+        "text": data.get("description", ""),
+        "category": data.get("scam_type", ""),
+        "link": data.get("ad_link", ""),
         "timestamp": int(time.time()),
-        "source": "user_report",
-        "ad_link": ad_link
+        "status": "pending"
     })
 
-    save_scans(scans)
+    write_json(REPORTS_FILE, reports)
+    return jsonify({"message": "Report submitted for admin review"})
 
-    return jsonify({
-        "message": "Report submitted successfully"
-    })
-    
-    
-# ================= ADMIN LOGIN =================
+# ================= ADMIN =================
 @app.route("/admin/login", methods=["POST"])
 def admin_login():
     data = request.json
-
-    username = data.get("username", "")
-    password = data.get("password", "")
-
-    if username == 'ShouryaRaj' and password == 'Subroto@123':
+    if data.get("username") == "admin" and data.get("password") == "admin123":
         return jsonify({"success": True})
-    else:
-        return jsonify({
-            "success": False,
-            "message": "Invalid admin credentials"
-        }), 401
+    return jsonify({"success": False}), 401
 
+@app.route("/admin/reports")
+def admin_reports():
+    return jsonify(read_json(REPORTS_FILE))
 
-# ================= ADMIN APIs =================
-
-@app.route("/admin/scans")
+# 🔥🔥🔥 THIS IS THE FIX 🔥🔥🔥
+@app.route("/admin/scans", methods=["GET"])
 def admin_scans():
-    scans = load_scans()
-    scans.reverse()
-    return jsonify(scans[:100])
+    scans = read_json(SCANS_FILE)
+    scans = sorted(scans, key=lambda x: x["timestamp"], reverse=True)
+    return jsonify(scans)
+
+@app.route("/admin/approve/<int:rid>", methods=["POST"])
+def approve_report(rid):
+    reports = read_json(REPORTS_FILE)
+    scans = read_json(SCANS_FILE)
+
+    for r in reports:
+        if r["id"] == rid and r["status"] == "pending":
+            r["status"] = "approved"
+            scans.append({
+                "text": r["text"][:200],
+                "result": "fake",
+                "probability": 1.0,
+                "category": r["category"],
+                "timestamp": int(time.time()),
+                "source": "admin_verified"
+            })
+
+    write_json(REPORTS_FILE, reports)
+    write_json(SCANS_FILE, scans)
+    return jsonify({"status": "approved"})
+
+@app.route("/admin/reject/<int:rid>", methods=["POST"])
+def reject_report(rid):
+    reports = read_json(REPORTS_FILE)
+    for r in reports:
+        if r["id"] == rid:
+            r["status"] = "rejected"
+    write_json(REPORTS_FILE, reports)
+    return jsonify({"status": "rejected"})
 
 @app.route("/admin/clear", methods=["POST"])
-def clear_data():
-    with open(SCANS_FILE, "w") as f:
-        json.dump([], f)
+def clear_scans():
+    write_json(SCANS_FILE, [])
     return jsonify({"status": "cleared"})
-
-
 
 # ================= START =================
 if __name__ == "__main__":
