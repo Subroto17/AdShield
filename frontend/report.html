@@ -5,7 +5,7 @@
     <title>Report Scam - AdShield AI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Main Styles -->
+    <!-- Global CSS -->
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
 
@@ -13,86 +13,65 @@
     <!-- NAVBAR -->
     <div class="navbar">
       <a href="index.html" class="logo"><b>AdShield AI</b></a>
+
       <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="scan.html">Scan</a>
         <a href="dashboard.html">Dashboard</a>
-        <a href="report.html" class="active">Report Scam</a>
+        <a href="report.html" class="active">Report</a>
         <a href="learn.html">Learn</a>
         <a href="admin.html">Admin</a>
       </div>
     </div>
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN -->
     <div class="container">
-      <div class="card-soft" style="max-width: 800px; margin: 50px auto">
-        <h2 style="text-align: center">🛡️ Report a Scam Advertisement</h2>
-        <p style="text-align: center; color: #555; margin-bottom: 30px">
+      <div class="card-soft">
+        <h2>🛡️ Report a Scam Advertisement</h2>
+        <p>
           Help protect others by reporting suspicious or fraudulent
           advertisements. All reports are reviewed and used to improve our AI
           detection system.
         </p>
 
-        <!-- SUCCESS MESSAGE -->
-        <div id="reportSuccess" class="success-box" style="display: none">
+        <!-- SUCCESS MESSAGE (HIDDEN BY CSS) -->
+        <div id="reportSuccess" class="success-box">
           ✅ Thank you! Your report has been submitted successfully.
           <br />
           Our system will use this information to improve scam detection.
         </div>
 
-        <!-- REPORT FORM -->
+        <!-- FORM -->
         <form
           id="reportForm"
           onsubmit="event.preventDefault(); submitReport();"
         >
-          <!-- Scam Type -->
           <label><b>Scam Type</b></label>
-          <select id="scamType" required>
-            <option value="money">💰 Money / Lottery Scam</option>
-            <option value="job">💼 Job Scam</option>
-            <option value="shopping">🛍️ Shopping Scam</option>
-            <option value="crypto">₿ Crypto / Investment Scam</option>
-            <option value="kyc">🆔 KYC / Verification Fraud</option>
-            <option value="general">🌐 General Scam</option>
+          <select id="scamType">
+            <option>Money / Lottery Scam</option>
+            <option>Shopping Scam</option>
+            <option>Job Scam</option>
+            <option>Investment Scam</option>
+            <option>Other</option>
           </select>
-
-          <!-- Ad Link -->
-          <label style="margin-top: 20px"
-            ><b>Advertisement Link (optional)</b></label
-          >
-          <input
-            type="text"
-            id="adLink"
-            placeholder="https://example.com/scam-ad"
-          />
-
-          <!-- Description -->
-          <label style="margin-top: 20px"><b>Describe the Scam</b></label>
+          <br />
+          <br />
+          <br />
+          <label><b>Describe the Scam</b></label>
           <textarea
             id="description"
             rows="5"
             placeholder="Explain why you believe this advertisement is fraudulent..."
-            required
           ></textarea>
 
-          <!-- Submit Button -->
-          <button
-            type="submit"
-            id="reportBtn"
-            class="btn-primary"
-            style="margin-top: 25px; width: 100%"
-          >
+          <button type="submit" class="btn-primary full-width-btn">
             Submit Scam Report
           </button>
         </form>
 
-        <!-- WHAT HAPPENS NEXT -->
-        <div
-          class="card-border"
-          style="margin-top: 25px; font-size: 14px; line-height: 1.6"
-        >
-          <b>🔍 What happens after you report?</b>
-          <ul style="margin-top: 8px; padding-left: 18px">
+        <div class="card-border" style="margin-top: 25px">
+          <h4>🔍 What happens after you report?</h4>
+          <ul>
             <li>Your report is securely stored in the system</li>
             <li>It is marked as a <b>high-confidence scam</b></li>
             <li>The data contributes to analytics and scam trends</li>
@@ -102,10 +81,24 @@
       </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer>© 2026 AdShield AI — Community Scam Reporting System</footer>
+    <!-- SUCCESS MODAL -->
+    <div id="reportModal" class="modal-overlay">
+      <div class="modal-box">
+        <h3>✅ Report Submitted</h3>
+        <p>
+          Thank you for reporting this scam advertisement.<br />
+          Your contribution helps improve our detection system.
+        </p>
 
-    <!-- MAIN SCRIPT -->
+        <div class="modal-actions">
+          <button class="btn-primary" onclick="closeReportModal()">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>© 2026 AdShield AI</footer>
+
+    <!-- JS -->
     <script src="assets/js/script.js"></script>
   </body>
 </html>

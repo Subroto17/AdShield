@@ -8,23 +8,11 @@
     <!-- Global CSS -->
     <link rel="stylesheet" href="assets/css/style.css" />
 
-    <!-- Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-
-    <!-- 🔥 TEMP FIX FOR HORIZONTAL SCROLL -->
-    <style>
-      html,
-      body {
-        overflow-x: hidden;
-        width: 100%;
-      }
-
-      /* Extra safety for hero section */
-      .hero {
-        max-width: 100%;
-        overflow-x: hidden;
-      }
-    </style>
+    <!-- AOS Animation -->
+    <link
+      href="https://unpkg.com/aos@2.3.1/dist/aos.css"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -44,23 +32,25 @@
 
     <!-- HERO SECTION -->
     <section class="hero">
-      <h1 data-aos="fade-down">AI-Powered Fake Advertisement Detection</h1>
+      <h1 data-aos="fade-down">
+        AI-Powered Fake Advertisement Detection
+      </h1>
 
       <p data-aos="fade-up">
-        Identify fraudulent, misleading, or scam advertisements instantly using
-        our advanced machine learning detection engine trained over 1000+ real
-        ads.
+        Identify fraudulent, misleading, or scam advertisements instantly
+        using our advanced machine learning detection engine trained over
+        1000+ real ads.
       </p>
 
       <a href="scan.html" class="cta-btn" data-aos="zoom-in">
         Start Scanning
       </a>
 
-      <!-- Background shape (problem creator, now controlled) -->
+      <!-- Background Shape -->
       <div class="hero-shape"></div>
     </section>
 
-    <!-- FEATURE SECTION -->
+    <!-- FEATURES -->
     <section class="features">
       <div class="feature-card" data-aos="fade-up">
         <div class="icon">⚡</div>
@@ -83,18 +73,19 @@
         <div class="icon">🔍</div>
         <h3>Fraud Confidence Score</h3>
         <p>
-          Get clear risk percentage and keyword highlights inside the scanner.
+          Get clear risk percentage and keyword highlights inside the
+          scanner.
         </p>
       </div>
     </section>
 
     <!-- FOOTER -->
-    <footer>© 2026 AdShield AI — Fake Advertisement Detection System</footer>
+    <footer>
+      © 2026 AdShield AI — Fake Advertisement Detection System
+    </footer>
 
-    <!-- JS for animations -->
+    <!-- Scripts -->
+    <script src="assets/js/script.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-      AOS.init();
-    </script>
   </body>
 </html>

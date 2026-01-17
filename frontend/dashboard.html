@@ -1,10 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Dashboard - AdShield AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Global CSS -->
     <link rel="stylesheet" href="assets/css/style.css" />
+
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
@@ -12,24 +16,21 @@
     <!-- NAVBAR -->
     <div class="navbar">
       <a href="index.html" class="logo"><b>AdShield AI</b></a>
+
       <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="scan.html">Scan</a>
-        <a href="dashboard.html">Dashboard</a>
+        <a href="dashboard.html" class="active">Dashboard</a>
         <a href="report.html">Report</a>
         <a href="learn.html">Learn</a>
         <a href="admin.html">Admin</a>
       </div>
     </div>
 
-    <!-- MAIN -->
+    <!-- MAIN CONTAINER -->
     <div class="container">
-      <h2 style="text-align: center; margin-bottom: 10px">
-        Analytics Dashboard
-      </h2>
-      <p style="text-align: center; color: #666">
-        Real-time insights from scanned advertisements
-      </p>
+      <h2 class="center-text">Analytics Dashboard</h2>
+      <p class="scan-desc">Real-time insights from scanned advertisements</p>
 
       <!-- KPI CARDS -->
       <div class="kpi-grid">
@@ -37,14 +38,17 @@
           <h4>Total Scans</h4>
           <p id="totalScans">0</p>
         </div>
+
         <div class="kpi-card">
           <h4>Fake Ads</h4>
           <p id="fakeCount" style="color: #e74a3b">0</p>
         </div>
+
         <div class="kpi-card">
           <h4>Genuine Ads</h4>
           <p id="genuineCount" style="color: #1cc88a">0</p>
         </div>
+
         <div class="kpi-card">
           <h4>Top Scam Category</h4>
           <p id="topCategory">-</p>
@@ -52,20 +56,34 @@
       </div>
 
       <!-- SYSTEM INSIGHT -->
-      <div class="card-soft" style="margin-top: 25px">
+      <div class="card-soft">
         <h3>🔍 System Insight</h3>
         <p id="insightText">Loading insights...</p>
       </div>
 
       <!-- CHART GRID -->
       <div class="dashboard-grid">
+        <!-- TIMELINE CHART -->
         <div class="card-soft chart-card">
           <h3>📈 Scam Trend Over Time</h3>
+
+          <!-- Message placeholder (important fix) -->
+          <p
+            id="timelineMsg"
+            style="
+              display: none;
+              text-align: center;
+              margin: 15px 0;
+              color: #64748b;
+            "
+          ></p>
+
           <div class="chart-container">
             <canvas id="timelineChart"></canvas>
           </div>
         </div>
 
+        <!-- PIE CHART -->
         <div class="card-soft chart-card">
           <h3>🟠 Fake vs Genuine</h3>
           <div class="chart-container">
@@ -74,7 +92,7 @@
         </div>
       </div>
 
-      <!-- CATEGORY -->
+      <!-- CATEGORY CHART -->
       <div class="card-soft chart-card">
         <h3>📊 Scam Categories</h3>
         <div class="chart-container">
@@ -83,8 +101,10 @@
       </div>
     </div>
 
+    <!-- FOOTER -->
     <footer>© 2026 AdShield AI</footer>
 
+    <!-- Scripts -->
     <script src="assets/js/script.js"></script>
   </body>
 </html>

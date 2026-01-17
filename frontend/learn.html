@@ -5,8 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Learn & Awareness - AdShield AI</title>
 
+    <!-- Global CSS -->
     <link rel="stylesheet" href="assets/css/style.css" />
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <!-- AOS Animation -->
+    <link
+      href="https://unpkg.com/aos@2.3.1/dist/aos.css"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -19,43 +25,37 @@
         <a href="scan.html">Scan Ad</a>
         <a href="dashboard.html">Dashboard</a>
         <a href="report.html">Report Scam</a>
-        <a href="learn.html">Learn</a>
+        <a href="learn.html" class="active">Learn</a>
         <a href="admin.html">Admin</a>
       </div>
     </div>
 
     <!-- PAGE HEADER -->
-    <div style="text-align: center; margin-top: 40px" data-aos="fade-down">
+    <div class="learn-header" data-aos="fade-down">
       <h2>Learn About Online Scam Advertisements</h2>
-      <p style="color: var(--text-light); max-width: 650px; margin: 10px auto">
-        Understand how fake advertisements work, how scams target users, and how
-        to protect yourself from fraud.
+      <p class="learn-desc">
+        Understand how fake advertisements work, how scams target users, and
+        how to protect yourself from fraud.
       </p>
     </div>
 
     <!-- LEARNING GRID -->
-    <div style="max-width: 1100px; margin: 50px auto; padding: 0 20px">
-      <div
-        style="
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 30px;
-        "
-      >
+    <div class="learn-container">
+      <div class="learn-grid">
         <!-- CARD 1 -->
         <div class="card-soft" data-aos="fade-up">
           <h3>🔍 How to Identify Fake Ads</h3>
-          <p style="color: var(--text-light); margin-top: 10px">
+          <p class="learn-text">
             Fake ads often include unrealistic offers, urgent warnings,
-            grammatical mistakes, or phrases like "Earn ₹10,000 per day", “Act
-            now!”, "Verify KYC immediately".
+            grammatical mistakes, or phrases like "Earn ₹10,000 per day",
+            “Act now!”, "Verify KYC immediately".
           </p>
         </div>
 
         <!-- CARD 2 -->
         <div class="card-soft" data-aos="fade-up" data-aos-delay="150">
           <h3>⚠️ Common Scam Patterns</h3>
-          <p style="color: var(--text-light); margin-top: 10px">
+          <p class="learn-text">
             • Lottery / reward scams<br />
             • Investment / crypto scams<br />
             • Job offers with upfront fees<br />
@@ -67,16 +67,16 @@
         <!-- CARD 3 -->
         <div class="card-soft" data-aos="fade-up" data-aos-delay="300">
           <h3>🛡️ How to Stay Safe</h3>
-          <p style="color: var(--text-light); margin-top: 10px">
-            Never click unknown links, avoid sharing OTP or personal ID, verify
-            official websites, and check reviews before responding to ads.
+          <p class="learn-text">
+            Never click unknown links, avoid sharing OTP or personal ID,
+            verify official websites, and check reviews before responding to ads.
           </p>
         </div>
 
         <!-- CARD 4 -->
         <div class="card-soft" data-aos="fade-up" data-aos-delay="450">
           <h3>📌 Fake Ad Examples</h3>
-          <p style="color: var(--text-light); margin-top: 10px">
+          <p class="learn-text">
             "Earn ₹50,000 per day without working"<br />
             "Congratulations! You won an iPhone"<br />
             "KYC suspended! Verify now"<br />
@@ -87,7 +87,7 @@
         <!-- CARD 5 -->
         <div class="card-soft" data-aos="fade-up" data-aos-delay="600">
           <h3>🟢 Genuine Ad Examples</h3>
-          <p style="color: var(--text-light); margin-top: 10px">
+          <p class="learn-text">
             "Admissions open for 2025 session"<br />
             "Official job recruitment by XYZ company"<br />
             "Winter sale - Flat 30% off on verified products"
@@ -97,21 +97,22 @@
         <!-- CARD 6 -->
         <div class="card-soft" data-aos="fade-up" data-aos-delay="750">
           <h3>🔐 How AdShield AI Helps</h3>
-          <p style="color: var(--text-light); margin-top: 10px">
+          <p class="learn-text">
             Our AI model analyzes suspicious keywords, patterns, tone,
-            structure, and context to determine if an ad is fake or genuine with
-            high accuracy.
+            structure, and context to determine if an ad is fake or genuine
+            with high accuracy.
           </p>
         </div>
       </div>
     </div>
 
     <!-- FOOTER -->
-    <footer>© 2026 AdShield AI — Fake Advertisement Detection System</footer>
+    <footer>
+      © 2026 AdShield AI — Fake Advertisement Detection System
+    </footer>
 
+    <!-- Scripts -->
+    <script src="assets/js/script.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-      AOS.init();
-    </script>
   </body>
 </html>

@@ -162,7 +162,7 @@ def report():
 @app.route("/admin/login", methods=["POST"])
 def admin_login():
     data = request.json
-    if data.get("username") == "admin" and data.get("password") == "admin123":
+    if data.get("username") == "ShouryaRaj" and data.get("password") == "Subroto@123":
         return jsonify({"success": True})
     return jsonify({"success": False}), 401
 
@@ -209,9 +209,17 @@ def reject_report(rid):
     return jsonify({"status": "rejected"})
 
 @app.route("/admin/clear", methods=["POST"])
-def clear_scans():
-    write_json(SCANS_FILE, [])
-    return jsonify({"status": "cleared"})
+def clear_all_data():
+    # Clear scanned ads
+    with open("scans.json", "w") as f:
+        json.dump([], f)
+
+    # Clear user reports
+    with open("reports.json", "w") as f:
+        json.dump([], f)
+
+    return jsonify({"message": "All data cleared"}), 200
+
 
 # ================= KEYWORD TRENDS =================
 @app.route("/admin/keywords")

@@ -5,6 +5,13 @@ function el(id) {
   return document.getElementById(id);
 }
 
+/* ================= AOS INIT (GLOBAL) ================= */
+document.addEventListener("DOMContentLoaded", () => {
+  if (window.AOS) {
+    AOS.init();
+  }
+});
+
 /* ================= SCAN PAGE ================= */
 
 async function predict() {
@@ -66,7 +73,7 @@ async function predict() {
       const regex = new RegExp(word, "gi");
       highlighted = highlighted.replace(
         regex,
-        `<span style="background:#ffe2e2;padding:3px;border-radius:4px">${word}</span>`
+        `<span style="background:#ffe2e2;padding:3px;border-radius:4px">${word}</span>`,
       );
     });
 
@@ -86,14 +93,45 @@ async function predict() {
 let categoryChart = null;
 let timelineChart = null;
 let pieChart = null;
-let keywordChart = null; // 🔥 NEW
+let keywordChart = null;
+
+async function loadSystemInsight() {
+  try {
+    const res = await fetch(`${API_BASE}/dashboard/summary`);
+    const data = await res.json();
+
+    const insightEl = el("insightText");
+    if (!insightEl) return;
+
+    if (data.total_scans === 0) {
+      insightEl.innerText = "No scans available yet.";
+      return;
+    }
+
+    const fakePercent = Math.round((data.fake / data.total_scans) * 100);
+
+    insightEl.innerText =
+      `Total Scans: ${data.total_scans}\n` +
+      `Fake Ads: ${fakePercent}%\n` +
+      `Genuine Ads: ${100 - fakePercent}%\n` +
+      `Top Scam Category: ${data.top_category}`;
+  } catch (err) {
+    console.error("System insight error:", err);
+  }
+}
 
 async function loadDashboard() {
   await loadSummary();
   await loadCategories();
+  await loadSystemInsight();
   await loadTimeline();
   await loadPie();
 }
+
+/* ================= ADMIN PAGINATION ================= */
+let allScans = [];
+let currentScanPage = 1;
+const scansPerPage = 10;
 
 /* -------- SUMMARY -------- */
 async function loadSummary() {
@@ -106,7 +144,6 @@ async function loadSummary() {
   if (el("topCategory"))
     el("topCategory").innerText = data.top_category.toUpperCase();
 
-  // ADMIN STATS
   if (el("adminTotal")) {
     el("adminTotal").innerText = data.total_scans;
     el("adminFake").innerText = data.fake;
@@ -142,34 +179,60 @@ async function loadCategories() {
 
 /* -------- TIMELINE -------- */
 async function loadTimeline() {
-  if (!el("timelineChart")) return;
+  try {
+    const res = await fetch(`${API_BASE}/dashboard/timeline`);
+    const data = await res.json();
 
-  const res = await fetch(`${API_BASE}/dashboard/timeline`);
-  const data = await res.json();
+    const chartCanvas = el("timelineChart");
+    if (!chartCanvas) return;
 
-  if (timelineChart) timelineChart.destroy();
+    // 🔹 Ensure at least 2 points so line is visible
+    if (data.dates && data.dates.length === 1) {
+      data.dates.push(data.dates[0]);
+      data.fake.push(data.fake[0]);
+      data.genuine.push(data.genuine[0]);
+    }
 
-  timelineChart = new Chart(el("timelineChart"), {
-    type: "line",
-    data: {
-      labels: data.dates,
-      datasets: [
-        {
-          label: "Fake",
-          data: data.fake,
-          borderColor: "#e74a3b",
-          tension: 0.4,
+    if (timelineChart) timelineChart.destroy();
+
+    timelineChart = new Chart(chartCanvas, {
+      type: "line",
+      data: {
+        labels: data.dates,
+        datasets: [
+          {
+            label: "Fake Ads",
+            data: data.fake,
+            borderColor: "#3b82f6",
+            backgroundColor: "#3b82f6",
+            borderWidth: 2,
+            tension: 0.4,
+            pointRadius: 5,
+            pointHoverRadius: 8,
+          },
+          {
+            label: "Genuine Ads",
+            data: data.genuine,
+            borderColor: "#22c55e",
+            backgroundColor: "#22c55e",
+            borderWidth: 2,
+            tension: 0.4,
+            pointRadius: 5,
+            pointHoverRadius: 8,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true, ticks: { precision: 0 } },
         },
-        {
-          label: "Genuine",
-          data: data.genuine,
-          borderColor: "#1cc88a",
-          tension: 0.4,
-        },
-      ],
-    },
-    options: { responsive: true, maintainAspectRatio: false },
-  });
+      },
+    });
+  } catch (err) {
+    console.error("Timeline error:", err);
+  }
 }
 
 /* -------- PIE -------- */
@@ -196,7 +259,7 @@ async function loadPie() {
   });
 }
 
-/* ================= 🔥 KEYWORD TRENDS ================= */
+/* ================= KEYWORD TRENDS ================= */
 
 async function loadKeywordTrends() {
   if (!el("keywordChart")) return;
@@ -229,9 +292,9 @@ async function loadKeywordTrends() {
 /* ================= REPORT SCAM ================= */
 
 async function submitReport() {
-  const scamType = el("scamType").value;
-  const adLink = el("adLink").value;
-  const description = el("description").value.trim();
+  const scamType = el("scamType")?.value || "";
+  const adLink = el("adLink")?.value || "";
+  const description = el("description")?.value.trim();
 
   if (!description) {
     alert("Please describe the suspicious advertisement.");
@@ -245,12 +308,13 @@ async function submitReport() {
       body: JSON.stringify({
         scam_type: scamType,
         ad_link: adLink,
-        description: description,
+        description,
       }),
     });
 
     if (res.ok) {
-      alert("✅ Report submitted successfully!");
+      showReportSuccess();
+      openReportModal();
       el("reportForm").reset();
     } else {
       alert("❌ Failed to submit report");
@@ -260,12 +324,46 @@ async function submitReport() {
   }
 }
 
-/* ================= ADMIN ================= */
+/* -------- REPORT UI HELPERS -------- */
 
+function showReportSuccess() {
+  const box = el("reportSuccess");
+  if (!box) return;
+
+  box.style.display = "block";
+
+  setTimeout(() => {
+    box.style.display = "none";
+  }, 5000);
+}
+
+function openReportModal() {
+  const modal = el("reportModal");
+  if (modal) modal.style.display = "flex";
+}
+
+function closeReportModal() {
+  const modal = el("reportModal");
+  if (modal) modal.style.display = "none";
+}
+
+/* ================= ADMIN ================= */
 async function adminLogin() {
-  const username = el("adminUsername").value.trim();
-  const password = el("adminPassword").value.trim();
+  const username = el("adminUser")?.value || el("adminUsername")?.value;
+  const password = el("adminPass")?.value || el("adminPassword")?.value;
   const errorBox = el("adminError");
+
+  const btn = el("loginBtn");
+  const text = el("loginText");
+  const spinner = el("loginSpinner");
+  const card = document.querySelector(".admin-card");
+
+  // Start loading UI
+  if (btn && text && spinner) {
+    btn.disabled = true;
+    text.style.display = "none";
+    spinner.style.display = "inline-block";
+  }
 
   try {
     const res = await fetch(`${API_BASE}/admin/login`, {
@@ -278,26 +376,102 @@ async function adminLogin() {
       sessionStorage.setItem("isAdmin", "true");
       window.location.href = "admin-dashboard.html";
     } else {
-      errorBox.innerText = "Invalid credentials";
-      errorBox.style.display = "block";
+      // Stop loading UI
+      if (btn && text && spinner) {
+        btn.disabled = false;
+        text.style.display = "inline";
+        spinner.style.display = "none";
+      }
+
+      if (errorBox) {
+        errorBox.innerText = "Invalid credentials";
+        errorBox.style.display = "block";
+      }
+
+      // Shake animation
+      if (card) {
+        card.classList.add("shake");
+        setTimeout(() => card.classList.remove("shake"), 400);
+      }
     }
   } catch {
-    errorBox.innerText = "Backend not reachable";
-    errorBox.style.display = "block";
+    // Stop loading UI
+    if (btn && text && spinner) {
+      btn.disabled = false;
+      text.style.display = "inline";
+      spinner.style.display = "none";
+    }
+
+    if (errorBox) {
+      errorBox.innerText = "Backend not reachable";
+      errorBox.style.display = "block";
+    }
   }
 }
 
-/* -------- ADMIN LOAD -------- */
+function togglePassword() {
+  const input = el("adminPass") || el("adminPassword");
+  if (!input) return;
+
+  input.type = input.type === "password" ? "text" : "password";
+}
+
+/* -------- ADMIN UI CONTROLS -------- */
+
+function openAdminTab(id, btn) {
+  document
+    .querySelectorAll(".tab-btn")
+    .forEach((b) => b.classList.remove("active"));
+  document
+    .querySelectorAll(".tab-content")
+    .forEach((c) => c.classList.remove("active"));
+  btn.classList.add("active");
+  el(id).classList.add("active");
+}
+
+function openLogoutModal() {
+  el("logoutModal").style.display = "flex";
+}
+
+function closeLogoutModal() {
+  el("logoutModal").style.display = "none";
+}
+
+function confirmLogout() {
+  sessionStorage.removeItem("isAdmin");
+  window.location.href = "admin.html";
+}
+
+/* -------- ADMIN DATA -------- */
+
 async function loadAdminScans() {
   if (!el("adminTable")) return;
 
   const res = await fetch(`${API_BASE}/admin/scans`);
-  const scans = await res.json();
+  allScans = await res.json();
 
+  // latest first
+  allScans.reverse();
+  currentScanPage = 1;
+
+  renderScanTable();
+  renderScanPagination();
+}
+
+function renderScanTable() {
   const table = el("adminTable");
   table.innerHTML = "";
 
-  scans.forEach((s) => {
+  const start = (currentScanPage - 1) * scansPerPage;
+  const end = start + scansPerPage;
+  const pageData = allScans.slice(start, end);
+
+  if (pageData.length === 0) {
+    table.innerHTML = `<tr><td colspan="4">No records</td></tr>`;
+    return;
+  }
+
+  pageData.forEach((s) => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${new Date(s.timestamp * 1000).toLocaleString()}</td>
@@ -307,6 +481,30 @@ async function loadAdminScans() {
     `;
     table.appendChild(row);
   });
+}
+
+function renderScanPagination() {
+  const container = el("scanPagination");
+  if (!container) return;
+
+  container.innerHTML = "";
+  const totalPages = Math.ceil(allScans.length / scansPerPage);
+
+  if (totalPages <= 1) return;
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.className = `page-btn ${i === currentScanPage ? "active" : ""}`;
+    btn.innerText = i;
+
+    btn.onclick = () => {
+      currentScanPage = i;
+      renderScanTable();
+      renderScanPagination();
+    };
+
+    container.appendChild(btn);
+  }
 }
 
 async function loadAdminReports() {
@@ -323,7 +521,8 @@ async function loadAdminReports() {
     row.innerHTML = `
       <td>${r.text}</td>
       <td>${r.category}</td>
-      <td>${r.status.toUpperCase()}</td>
+     <td class="status ${r.status}">${r.status.toUpperCase()}</td>
+
       <td>
         ${
           r.status === "pending"
@@ -349,6 +548,7 @@ async function rejectReport(id) {
 }
 
 /* -------- AUTO LOAD -------- */
+
 if (window.location.pathname.includes("dashboard.html")) {
   loadDashboard();
 }
@@ -357,5 +557,59 @@ if (window.location.pathname.includes("admin-dashboard.html")) {
   loadSummary();
   loadAdminScans();
   loadAdminReports();
-  loadKeywordTrends(); // 🔥 FINAL CALL
+  loadKeywordTrends();
+}
+
+async function clearDashboard() {
+  const confirmClear = confirm(
+    "⚠️ This will delete ALL scanned ads and reports.\nAre you sure?",
+  );
+
+  if (!confirmClear) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/clear`, {
+      method: "POST",
+    });
+
+    if (res.ok) {
+      alert("✅ All data cleared successfully!");
+      loadSummary();
+      loadAdminScans();
+      loadAdminReports();
+    } else {
+      alert("❌ Failed to clear data");
+    }
+  } catch (err) {
+    alert("Backend not reachable. Start app.py");
+  }
+}
+
+function openClearModal() {
+  document.getElementById("clearModal").style.display = "flex";
+}
+
+function closeClearModal() {
+  document.getElementById("clearModal").style.display = "none";
+}
+
+async function confirmClearData() {
+  closeClearModal();
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/clear`, {
+      method: "POST",
+    });
+
+    if (res.ok) {
+      alert("✅ All data cleared successfully!");
+      loadSummary();
+      loadAdminScans();
+      loadAdminReports();
+    } else {
+      alert("❌ Failed to clear data");
+    }
+  } catch {
+    alert("Backend not reachable. Start app.py");
+  }
 }

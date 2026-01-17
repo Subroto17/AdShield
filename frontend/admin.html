@@ -5,73 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Login - AdShield AI</title>
 
+    <!-- Global CSS -->
     <link rel="stylesheet" href="assets/css/style.css" />
+
+    <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-
-    <style>
-      /* Additional admin-page only styles */
-      .admin-wrapper {
-        height: calc(100vh - 80px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: var(--gradient);
-        padding: 20px;
-      }
-
-      .admin-card {
-        width: 100%;
-        max-width: 420px;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px);
-        border-radius: var(--radius-lg);
-        padding: 40px 32px;
-        box-shadow: var(--shadow-lg);
-        animation: fadeIn 0.6s ease;
-      }
-
-      .admin-card h2 {
-        text-align: center;
-        margin-bottom: 8px;
-        color: var(--text-dark);
-      }
-
-      .admin-card p {
-        text-align: center;
-        margin-bottom: 28px;
-        color: var(--text-light);
-      }
-
-      .admin-card label {
-        font-weight: 600;
-        font-size: 14px;
-        margin-bottom: 6px;
-        display: block;
-      }
-
-      .admin-card input {
-        margin-bottom: 18px;
-      }
-
-      .admin-error {
-        color: #e74a3b;
-        text-align: center;
-        margin-top: 12px;
-        display: none;
-        font-size: 14px;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(25px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-    </style>
   </head>
 
   <body>
@@ -85,15 +23,15 @@
         <a href="dashboard.html">Dashboard</a>
         <a href="report.html">Report Scam</a>
         <a href="learn.html">Learn</a>
-        <a href="admin.html">Admin</a>
+        <a href="admin.html" class="active">Admin</a>
       </div>
     </div>
 
     <!-- ADMIN LOGIN AREA -->
     <div class="admin-wrapper" data-aos="zoom-in">
       <div class="admin-card">
-        <h2>Admin Login</h2>
-        <p>Restricted access — authorized personnel only</p>
+        <h2 class="center-text">Admin Login</h2>
+        <p class="scan-desc">Restricted access — authorized personnel only</p>
 
         <!-- LOGIN FORM -->
         <form onsubmit="event.preventDefault(); adminLogin();">
@@ -102,10 +40,23 @@
             type="text"
             id="adminUser"
             placeholder="Enter admin username"
+            required
           />
-          <input type="password" id="adminPass" placeholder="Enter password" />
 
-          <button class="btn-primary" onclick="adminLogin()">Login</button>
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="adminPass"
+              placeholder="Enter password"
+            />
+            <span class="toggle-password" onclick="togglePassword()">👁️</span>
+          </div>
+
+          <button id="loginBtn" class="btn-primary" onclick="adminLogin()">
+            <span id="loginText">Login</span>
+            <span id="loginSpinner" class="spinner"></span>
+          </button>
         </form>
 
         <!-- ERROR MESSAGE -->
@@ -114,27 +65,10 @@
     </div>
 
     <!-- FOOTER -->
-    <footer style="background: white">
-      © 2026 AdShield AI — Fake Advertisement Detection System
-    </footer>
+    <footer>© 2026 AdShield AI — Fake Advertisement Detection System</footer>
 
+    <!-- Scripts -->
     <script src="assets/js/script.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-      AOS.init();
-    </script>
-    <script>
-      function adminLogin() {
-        const username = document.getElementById("adminUser").value;
-        const password = document.getElementById("adminPass").value;
-
-        if (username === "ShouryaRaj" && password === "Subroto@123") {
-          sessionStorage.setItem("isAdmin", "true");
-          window.location.href = "admin-dashboard.html";
-        } else {
-          alert("Invalid admin credentials");
-        }
-      }
-    </script>
   </body>
 </html>
