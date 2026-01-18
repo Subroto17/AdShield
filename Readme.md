@@ -1,188 +1,153 @@
-🛡️ AdShield AI
 
-Fake & Fraudulent Advertisement Detection System
+# 🛡️ AdShield AI
 
-AdShield AI is an AI-powered web application designed to detect fake, scam, and fraudulent advertisements using Machine Learning and Natural Language Processing (NLP).
-It helps users identify job scams, money scams, lottery frauds, crypto scams, and misleading promotions in real time.
+### Fake & Fraudulent Advertisement Detection System
 
-The system provides:
+🚀 **AdShield AI** is an AI-powered web application that detects **fake, scam, and fraudulent advertisements** using **Machine Learning** and **Natural Language Processing (NLP)**.
 
-Risk classification (Fake / Genuine)
+It helps users identify:
 
-Confidence score
+* 💼 Job scams
+* 💰 Money scams
+* 🏆 Lottery frauds
+* ₿ Crypto scams
+* 🛍️ Misleading promotions
 
-Scam category detection
-
-Admin moderation & analytics dashboard
-
-
+in **real time** with high accuracy.
 
 ---
 
-🚀 Project Overview
+## 🌟 Key Highlights
 
-With the rapid growth of online advertisements, scams have become increasingly common.
-AdShield AI addresses this problem by analyzing advertisement text using a trained ML model combined with rule-based intelligence, ensuring higher accuracy and reliability.
-
-This project is suitable for:
-
-MCA / BCA Final Year Projects
-
-AI / ML Demonstrations
-
-Cybersecurity & Fraud Detection Use Cases
-
-
+✔ Fake / Genuine classification
+✔ Confidence score for every scan
+✔ Scam category detection
+✔ Admin moderation & analytics dashboard
+✔ Keyword trend analysis
+✔ User scam reporting system
 
 ---
 
-🧠 Technology Stack
+## 📌 Project Overview
 
-🔹 Frontend
+With the rapid growth of online advertisements, scam activities have increased significantly.
+**AdShield AI** analyzes advertisement text using a **trained ML model combined with rule-based intelligence**, ensuring **reliable and explainable predictions**.
 
-HTML5
+🎓 **Ideal for:**
 
-CSS3
-
-JavaScript (Vanilla JS)
-
-Chart.js (for analytics & graphs)
-
-AOS (Animate On Scroll)
-
-
-🔹 Backend
-
-Python
-
-Flask
-
-Flask-CORS
-
-
-🔹 Machine Learning
-
-Scikit-learn
-
-TF-IDF Vectorizer
-
-Logistic Regression (Binary Classification)
-
-
-🔹 Storage
-
-JSON files (scans.json, reports.json)
-
-CSV dataset (dataset.csv)
-
-
+* MCA / BCA Final Year Projects
+* AI / ML Demonstrations
+* Cybersecurity & Fraud Detection Use Cases
 
 ---
 
-✨ Key Features
+## 🧠 Technology Stack
 
-🔍 1. Fake Advertisement Detection
+### 🔹 Frontend
 
-Detects whether an advertisement is FAKE or GENUINE
+* HTML5
+* CSS3
+* JavaScript (Vanilla JS)
+* Chart.js (Analytics & graphs)
+* AOS (Animate On Scroll)
 
-Displays a confidence percentage
+### 🔹 Backend
 
-Highlights suspicious keywords
+* Python
+* Flask
+* Flask-CORS
 
-Uses both ML prediction + rule-based validation
+### 🔹 Machine Learning
 
+* Scikit-learn
+* TF-IDF Vectorizer
+* Logistic Regression (Binary Classification)
 
-📸 Screenshot: ![Scan-Page](image.png)
+### 🔹 Storage
 
-
----
-
-📊 2. Interactive Dashboard
-
-Total number of scanned ads
-
-Fake vs Genuine count
-
-Top scam category
-
-Category-wise bar chart
-
-Fake/Genuine timeline graph
-
-Pie chart visualization
-
-
-📸 Screenshot: ![Dashboard](image-1.png)
-
+* JSON files (`scans.json`, `reports.json`)
+* CSV dataset (`dataset.csv`)
 
 ---
 
-🗂️ 3. Scam Category Detection
+## ✨ Features
+
+### 🔍 1. Fake Advertisement Detection
+
+* Detects **FAKE** or **GENUINE** ads
+* Displays **confidence percentage**
+* Highlights suspicious keywords
+* Combines **ML prediction + rule-based validation**
+
+📸 *Screenshot:*
+`frontend/assets/screenshots/scan-page.png`
+
+---
+
+### 📊 2. Interactive Dashboard
+
+* Total scanned advertisements
+* Fake vs Genuine statistics
+* Top scam category
+* Category-wise bar chart
+* Timeline trend graph
+* Pie chart visualization
+
+📸 *Screenshot:*
+`frontend/assets/screenshots/dashboard.png`
+
+---
+
+### 🗂️ 3. Scam Category Detection
 
 Automatically classifies ads into:
 
-💰 Money Scam
-
-💼 Job Scam
-
-🛍️ Shopping Scam
-
-₿ Crypto Scam
-
-🧾 General Scam
-
-
+* 💰 Money Scam
+* 💼 Job Scam
+* 🛍️ Shopping Scam
+* ₿ Crypto Scam
+* 🧾 General Scam
 
 ---
 
-🚨 4. Report Scam (User Module)
+### 🚨 4. Report Scam (User Module)
 
-Users can report suspicious ads manually
+* Users can manually report suspicious ads
+* Reports stored for admin review
+* Helps improve system intelligence
 
-Reports are stored for admin review
-
-Helps improve system intelligence
-
-
-📸 Screenshot: ![Report-Scam](image-2.png)
-
+📸 *Screenshot:*
+`frontend/assets/screenshots/report-scam.png`
 
 ---
 
-🧑‍💼 5. Admin Panel
+### 🧑‍💼 5. Admin Panel
 
-Secure admin login
+* Secure admin login
+* View all scanned advertisements
+* Review & approve/reject user reports
+* Clear dashboard data
+* Keyword trend analysis
 
-View all scanned advertisements
-
-Review and approve/reject user reports
-
-Clear dashboard data
-
-Keyword trend analysis from fake ads
-
-
-📸 Screenshot: ![Admin-Dashboard](image-3.png)
-
+📸 *Screenshot:*
+`frontend/assets/screenshots/admin-dashboard.png`
 
 ---
 
-📈 6. Keyword Trend Analysis
+### 📈 6. Keyword Trend Analysis
 
-Extracts most common keywords from verified fake ads
+* Extracts frequent keywords from verified fake ads
+* Identifies emerging scam patterns
+* Useful for cybersecurity research
 
-Helps identify emerging scam patterns
-
-Useful for cybersecurity analysis
-
-
-📸 Screenshot: ![Keyword](image-4.png)
-
+📸 *Screenshot:*
+`frontend/assets/screenshots/keyword-analysis.png`
 
 ---
 
-📂 Project Folder Structure
+## 📂 Project Folder Structure
 
+```
 AdShield/
 │
 ├── backend/
@@ -209,166 +174,154 @@ AdShield/
 ├── requirements.txt
 ├── README.md
 └── .gitignore
-
+```
 
 ---
 
-⚙️ Installation & Setup Guide
+## ⚙️ Installation & Setup
 
-🔹 1. Clone the Repository
+### 🔹 1. Clone the Repository
 
-git clone [AdShield](https://github.com/Subroto17/AdShield.git)
+```bash
+git clone https://github.com/Subroto17/AdShield.git
 cd AdShield
-
+```
 
 ---
 
-🔹 2. Create Virtual Environment
+### 🔹 2. Create Virtual Environment
 
-Windows
+**Windows**
 
+```bash
 python -m venv venv
+```
 
-macOS / Linux
+**macOS / Linux**
 
+```bash
 python3 -m venv venv
-
+```
 
 ---
 
-🔹 3. Activate Virtual Environment
+### 🔹 3. Activate Virtual Environment
 
-Windows (PowerShell)
+**Windows (CMD)**
 
+```bash
+venv\Scripts\activate
+```
+
+**Windows (PowerShell)**
+
+```bash
 venv\Scripts\Activate.ps1
+```
 
 If blocked:
 
+```bash
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
 
-Windows (CMD)
+**macOS / Linux**
 
-venv\Scripts\activate
-
-macOS / Linux
-
+```bash
 source venv/bin/activate
-
+```
 
 ---
 
-🔹 4. Install Dependencies
+### 🔹 4. Install Dependencies
 
+```bash
 pip install -r requirements.txt
-
+```
 
 ---
 
-🔹 5. Train the Machine Learning Model
+### 🔹 5. Train the Machine Learning Model
 
+```bash
 cd backend
 python train_model.py
+```
 
-This will generate:
+Generates:
 
-model.pkl
-
-vectorizer.pkl
-
-
+* `model.pkl`
+* `vectorizer.pkl`
 
 ---
 
-🔹 6. Start Backend Server
+### 🔹 6. Start Backend Server
 
+```bash
 python app.py
+```
 
-Backend runs at:
+📍 Backend URL:
 
+```
 http://127.0.0.1:5000
-
-
----
-
-🔹 7. Run Frontend
-
-Open any frontend page using:
-
-VS Code Live Server OR
-
-Double-click frontend/index.html
-
-
+```
 
 ---
 
-🔐 Admin Credentials (Demo)
+### 🔹 7. Run Frontend
 
+Open any frontend file using:
+
+* VS Code Live Server **OR**
+* Double-click `frontend/index.html`
+
+---
+
+## 🔐 Admin Credentials (Demo)
+
+```
 Username: ShouryaRaj
 Password: Subroto@123
+```
 
-> ⚠️ For production, move credentials to environment variables.
-
-
-
+⚠️ **Note:** For production, store credentials in environment variables.
 
 ---
 
-🧪 How Prediction Works (Simplified)
+## 🧪 How Prediction Works
 
 1. User submits advertisement text
-
-
-2. Text is cleaned & vectorized (TF-IDF)
-
-
-3. ML model predicts fake/genuine
-
-
+2. Text is cleaned & vectorized using **TF-IDF**
+3. ML model predicts **Fake / Genuine**
 4. Rule-based checks verify red flags
-
-
-5. Probability is calibrated
-
-
-6. Result is saved to database
-
-
-7. Dashboard updates in real time
-
-
-
+5. Confidence score is calibrated
+6. Result stored in database
+7. Dashboard updates dynamically
 
 ---
 
-🔮 Future Enhancements
+## 🔮 Future Enhancements
 
-Deep Learning (LSTM / BERT)
-
-URL phishing detection
-
-Image-based scam detection (OCR)
-
-Cloud deployment (AWS / GCP)
-
-User authentication
-
-Continuous model retraining
-
-
+* Deep Learning (LSTM / BERT)
+* URL phishing detection
+* Image-based scam detection (OCR)
+* Cloud deployment (AWS / GCP)
+* User authentication
+* Continuous model retraining
 
 ---
 
-📜 Disclaimer
+## 📜 Disclaimer
 
-This project is developed for educational and research purposes only.
-Predictions are probabilistic and should not be treated as legal advice.
-
+This project is developed **for educational and research purposes only**.
+Predictions are **probabilistic** and should not be treated as legal advice.
 
 ---
 
-👨‍💻 Author
+## 👨‍💻 Author
 
-AdShield AI 
-Developed by Subroto 
+**AdShield AI**
+Developed by **Subroto Raj**
+
 
