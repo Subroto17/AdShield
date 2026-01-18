@@ -42,6 +42,8 @@ def write_json(path, data):
 # ================= CATEGORY =================
 def get_category(text):
     t = text.lower()
+    if any(w in t for w in ["earn", "salary", "job", "hiring", "work"]):
+        return "Job Scam"
     if any(w in t for w in ["lottery", "earn", "money", "investment"]):
         return "Money Scam"
     if any(w in t for w in ["job", "salary", "hiring"]):
@@ -55,11 +57,25 @@ def get_category(text):
 # ================= RULE BASED =================
 def rule_based_fake(text):
     t = text.lower()
-    if re.search(r"\b\d{8,}\b", t):
+
+    scam_keywords = [
+        "lottery", "win", "winner", "earn", "money", "profit",
+        "investment", "guaranteed", "double", "free", "offer",
+        "register", "registration", "apply", "job", "salary",
+        "work from home", "click", "link", "limited time",
+        "hurry", "fast", "instant", "no experience"
+    ]
+
+    # Large numbers (phone, prize amounts)
+    if re.search(r"\b\d{4,}\b", t):
         return True
-    if any(w in t for w in ["lottery", "guaranteed", "double money"]):
+
+    # Keyword-based scam detection
+    if any(word in t for word in scam_keywords):
         return True
+
     return False
+
 
 # ================= PREDICT =================
 @app.route("/predict", methods=["POST"])
@@ -68,11 +84,64 @@ def predict():
     if not text:
         return jsonify({"error": "Empty input"}), 400
 
+    # Rule-based detection
+    forced_fake = rule_based_fake(text)
+
+    # ML prediction
+    vec = vectorizer.transform([text])
+    probs = model.predict_proba(vec)[0]
+
+    genuine_prob = float(probs[0])
+    fake_prob = float(probs[1])
+
+    # SAFETY-FIRST DECISION
+    THRESHOLD = 0.6  # you can tune this (0.5–0.7)
+
+    if forced_fake or fake_prob >= THRESHOLD:
+        result = "fake"
+        probability = max(fake_prob, 0.85)
+    else:
+        result = "genuine"
+        probability = genuine_prob
+
+    # Save scan
+    scans = read_json(SCANS_FILE)
+    scans.append({
+        "text": text[:200],
+        "result": result,
+        "probability": round(probability, 2),
+        "category": get_category(text),
+        "timestamp": int(time.time()),
+        "source": "system"
+    })
+    write_json(SCANS_FILE, scans)
+
+    return jsonify({
+        "result": result,
+        "probability": round(probability, 2)
+    })
+
+    text = request.json.get("text", "").strip()
+    if not text:
+        return jsonify({"error": "Empty input"}), 400
+
     forced_fake = rule_based_fake(text)
 
     vec = vectorizer.transform([text])
     pred = int(model.predict(vec)[0])
-    prob = float(model.predict_proba(vec)[0][pred])
+    probs = model.predict_proba(vec)[0]
+
+    fake_prob = probs[1]  # probability of FAKE class
+    genuine_prob = probs[0]
+
+# Safety-first decision
+    if forced_fake or fake_prob >= 0.6:
+        result = "fake"
+        probability = max(fake_prob, 0.85)
+    else:
+        result = "genuine"
+        probability = genuine_prob
+
 
     result = "fake" if forced_fake or pred == 1 else "genuine"
     probability = max(prob, 0.9) if forced_fake else prob

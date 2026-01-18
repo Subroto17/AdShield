@@ -7,7 +7,7 @@ import tempfile
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report
 
 # ---------------- PATHS ---------------- #
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -37,7 +37,7 @@ def clean_text(text):
 
 df["clean_text"] = df["text"].apply(clean_text)
 
-# Normalize labels
+# ---------------- NORMALIZE LABELS ---------------- #
 df["label"] = df["label"].astype(str).str.lower()
 df["label"] = df["label"].replace({
     "fake": 1,
@@ -49,32 +49,56 @@ df["label"] = df["label"].replace({
 # Remove invalid rows
 df = df[df["label"].isin([0, 1])]
 
+# ---------------- 🔥 ADDITION 1: REMOVE DUPLICATES ---------------- #
+before = len(df)
+df = df.drop_duplicates(subset=["clean_text", "label"])
+after = len(df)
+print(f"🧹 Removed duplicates: {before - after}")
+
+# ---------------- 🔥 ADDITION 2: CLASS BALANCE CHECK ---------------- #
+print("\n📊 Class distribution:")
+print(df["label"].value_counts())
+
 # ---------------- TRAIN TEST SPLIT ---------------- #
 X = df["clean_text"]
 y = df["label"]
 
+# ---------------- 🔥 IMPROVED VECTORIZER (SAFE) ---------------- #
 vectorizer = TfidfVectorizer(
     stop_words="english",
     max_features=5000,
-    ngram_range=(1, 2)
+    ngram_range=(1, 2),
+    min_df=2,     # ignore very rare words
+    max_df=0.95   # ignore extremely common words
 )
 
 X_vec = vectorizer.fit_transform(X)
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X_vec, y, test_size=0.2, random_state=42
+    X_vec,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y  # 🔥 important for fairness
 )
 
 # ---------------- TRAIN MODEL ---------------- #
-model = LogisticRegression(max_iter=500)
+model = LogisticRegression(
+    max_iter=500,
+    class_weight="balanced"  # 🔥 handles imbalance
+)
+
 model.fit(X_train, y_train)
 
 # ---------------- EVALUATE ---------------- #
 preds = model.predict(X_test)
 acc = accuracy_score(y_test, preds)
 
-print(f"\n✅ Training completed")
-print(f"📊 Accuracy: {acc * 100:.2f}%")
+print("\n✅ Training completed")
+print(f"📊 Accuracy: {acc * 100:.2f}%\n")
+
+print("📑 Classification Report:")
+print(classification_report(y_test, preds))
 
 # ---------------- SAFE SAVE FUNCTION ---------------- #
 def safe_save(obj, path):

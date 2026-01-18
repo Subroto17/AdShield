@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": 1768739033,
+    "text": "JOB SCAM",
+    "category": "Job Scam",
+    "link": "",
+    "timestamp": 1768739033,
+    "status": "pending"
+  },
+  {
+    "id": 1768745482,
+    "text": "Testing 1",
+    "category": "Money / Lottery Scam",
+    "link": "",
+    "timestamp": 1768745482,
+    "status": "pending"
+  }
+]

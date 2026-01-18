@@ -1,1 +1,186 @@
-[]
+[
+  {
+    "text": "Double your money within 24 hours",
+    "result": "fake",
+    "probability": 0.6,
+    "category": "Money Scam",
+    "timestamp": 1768738995,
+    "source": "system"
+  },
+  {
+    "text": "Fresh groceries available for home delivery in your area",
+    "result": "genuine",
+    "probability": 0.93,
+    "category": "General Scam",
+    "timestamp": 1768739003,
+    "source": "system"
+  },
+  {
+    "text": "Work from home and earn daily income",
+    "result": "fake",
+    "probability": 0.74,
+    "category": "Money Scam",
+    "timestamp": 1768739011,
+    "source": "system"
+  },
+  {
+    "text": "Limited offer buy now pay nothing",
+    "result": "genuine",
+    "probability": 0.74,
+    "category": "Shopping Scam",
+    "timestamp": 1768739171,
+    "source": "system"
+  },
+  {
+    "text": "Flash sale ending today hurry up",
+    "result": "genuine",
+    "probability": 0.61,
+    "category": "General Scam",
+    "timestamp": 1768739182,
+    "source": "system"
+  },
+  {
+    "text": "Online course enrollment now open",
+    "result": "genuine",
+    "probability": 0.8,
+    "category": "General Scam",
+    "timestamp": 1768739189,
+    "source": "system"
+  },
+  {
+    "text": "Pay registration fee to start job",
+    "result": "fake",
+    "probability": 0.57,
+    "category": "Job Scam",
+    "timestamp": 1768739196,
+    "source": "system"
+  },
+  {
+    "text": "Guaranteed crypto returns in one week",
+    "result": "fake",
+    "probability": 0.9,
+    "category": "Crypto Scam",
+    "timestamp": 1768739203,
+    "source": "system"
+  },
+  {
+    "text": "Workshop on cloud computing scheduled next week",
+    "result": "genuine",
+    "probability": 0.72,
+    "category": "General Scam",
+    "timestamp": 1768739213,
+    "source": "system"
+  },
+  {
+    "text": "Buy electronics at 90 percent discount",
+    "result": "genuine",
+    "probability": 0.9,
+    "category": "Shopping Scam",
+    "timestamp": 1768739221,
+    "source": "system"
+  },
+  {
+    "text": "Pay registration fee to start job",
+    "result": "fake",
+    "probability": 0.66,
+    "category": "Job Scam",
+    "timestamp": 1768739385,
+    "source": "system"
+  },
+  {
+    "text": "Online course enrollment now open",
+    "result": "genuine",
+    "probability": 0.82,
+    "category": "General Scam",
+    "timestamp": 1768739395,
+    "source": "system"
+  },
+  {
+    "text": "Buy electronics at 90 percent discount",
+    "result": "genuine",
+    "probability": 0.88,
+    "category": "Shopping Scam",
+    "timestamp": 1768739420,
+    "source": "system"
+  },
+  {
+    "text": "Buy electronics at 90 percent discount",
+    "result": "genuine",
+    "probability": 0.88,
+    "category": "Shopping Scam",
+    "timestamp": 1768743343,
+    "source": "system"
+  },
+  {
+    "text": "Earn passive income through crypto",
+    "result": "fake",
+    "probability": 0.85,
+    "category": "Job Scam",
+    "timestamp": 1768743362,
+    "source": "system"
+  },
+  {
+    "text": "Double your money within 24 hours",
+    "result": "fake",
+    "probability": 0.85,
+    "category": "Money Scam",
+    "timestamp": 1768743369,
+    "source": "system"
+  },
+  {
+    "text": "Buy household items with seasonal discount",
+    "result": "genuine",
+    "probability": 0.81,
+    "category": "Shopping Scam",
+    "timestamp": 1768743380,
+    "source": "system"
+  },
+  {
+    "text": "No interview required job offer",
+    "result": "fake",
+    "probability": 0.85,
+    "category": "Job Scam",
+    "timestamp": 1768743389,
+    "source": "system"
+  },
+  {
+    "text": "Online course enrollment now open",
+    "result": "genuine",
+    "probability": 0.82,
+    "category": "General Scam",
+    "timestamp": 1768743400,
+    "source": "system"
+  },
+  {
+    "text": "Join our crypto mining pool today",
+    "result": "fake",
+    "probability": 0.85,
+    "category": "Crypto Scam",
+    "timestamp": 1768743411,
+    "source": "system"
+  },
+  {
+    "text": "Online course enrollment now open",
+    "result": "genuine",
+    "probability": 0.82,
+    "category": "General Scam",
+    "timestamp": 1768743431,
+    "source": "system"
+  },
+  {
+    "text": "Buy electronics at 90 percent discount",
+    "result": "genuine",
+    "probability": 0.88,
+    "category": "Shopping Scam",
+    "timestamp": 1768743443,
+    "source": "system"
+  },
+  {
+    "text": "Limited offer buy now pay nothing",
+    "result": "fake",
+    "probability": 0.85,
+    "category": "Shopping Scam",
+    "timestamp": 1768743452,
+    "source": "system"
+  }
+]
