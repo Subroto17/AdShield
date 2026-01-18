@@ -1,4 +1,3 @@
-
 # 🛡️ AdShield AI
 
 ### Fake & Fraudulent Advertisement Detection System
@@ -7,11 +6,11 @@
 
 It helps users identify:
 
-* 💼 Job scams
-* 💰 Money scams
-* 🏆 Lottery frauds
-* ₿ Crypto scams
-* 🛍️ Misleading promotions
+- 💼 Job scams
+- 💰 Money scams
+- 🏆 Lottery frauds
+- ₿ Crypto scams
+- 🛍️ Misleading promotions
 
 in **real time** with high accuracy.
 
@@ -35,9 +34,9 @@ With the rapid growth of online advertisements, scam activities have increased s
 
 🎓 **Ideal for:**
 
-* MCA / BCA Final Year Projects
-* AI / ML Demonstrations
-* Cybersecurity & Fraud Detection Use Cases
+- MCA / BCA Final Year Projects
+- AI / ML Demonstrations
+- Cybersecurity & Fraud Detection Use Cases
 
 ---
 
@@ -45,28 +44,28 @@ With the rapid growth of online advertisements, scam activities have increased s
 
 ### 🔹 Frontend
 
-* HTML5
-* CSS3
-* JavaScript (Vanilla JS)
-* Chart.js (Analytics & graphs)
-* AOS (Animate On Scroll)
+- HTML5
+- CSS3
+- JavaScript (Vanilla JS)
+- Chart.js (Analytics & graphs)
+- AOS (Animate On Scroll)
 
 ### 🔹 Backend
 
-* Python
-* Flask
-* Flask-CORS
+- Python
+- Flask
+- Flask-CORS
 
 ### 🔹 Machine Learning
 
-* Scikit-learn
-* TF-IDF Vectorizer
-* Logistic Regression (Binary Classification)
+- Scikit-learn
+- TF-IDF Vectorizer
+- Logistic Regression (Binary Classification)
 
 ### 🔹 Storage
 
-* JSON files (`scans.json`, `reports.json`)
-* CSV dataset (`dataset.csv`)
+- JSON files (`scans.json`, `reports.json`)
+- CSV dataset (`dataset.csv`)
 
 ---
 
@@ -74,27 +73,27 @@ With the rapid growth of online advertisements, scam activities have increased s
 
 ### 🔍 1. Fake Advertisement Detection
 
-* Detects **FAKE** or **GENUINE** ads
-* Displays **confidence percentage**
-* Highlights suspicious keywords
-* Combines **ML prediction + rule-based validation**
+- Detects **FAKE** or **GENUINE** ads
+- Displays **confidence percentage**
+- Highlights suspicious keywords
+- Combines **ML prediction + rule-based validation**
 
-📸 *Screenshot:*
-`frontend/assets/screenshots/scan-page.png`
+📸 _Screenshot:_
+`![Scan Page](image.png)`
 
 ---
 
 ### 📊 2. Interactive Dashboard
 
-* Total scanned advertisements
-* Fake vs Genuine statistics
-* Top scam category
-* Category-wise bar chart
-* Timeline trend graph
-* Pie chart visualization
+- Total scanned advertisements
+- Fake vs Genuine statistics
+- Top scam category
+- Category-wise bar chart
+- Timeline trend graph
+- Pie chart visualization
 
-📸 *Screenshot:*
-`frontend/assets/screenshots/dashboard.png`
+📸 _Screenshot:_
+`![Dashboard](image-1.png)`
 
 ---
 
@@ -102,46 +101,46 @@ With the rapid growth of online advertisements, scam activities have increased s
 
 Automatically classifies ads into:
 
-* 💰 Money Scam
-* 💼 Job Scam
-* 🛍️ Shopping Scam
-* ₿ Crypto Scam
-* 🧾 General Scam
+- 💰 Money Scam
+- 💼 Job Scam
+- 🛍️ Shopping Scam
+- ₿ Crypto Scam
+- 🧾 General Scam
 
 ---
 
 ### 🚨 4. Report Scam (User Module)
 
-* Users can manually report suspicious ads
-* Reports stored for admin review
-* Helps improve system intelligence
+- Users can manually report suspicious ads
+- Reports stored for admin review
+- Helps improve system intelligence
 
-📸 *Screenshot:*
-`frontend/assets/screenshots/report-scam.png`
+📸 _Screenshot:_
+`![Report-Scam](image-2.png)`
 
 ---
 
 ### 🧑‍💼 5. Admin Panel
 
-* Secure admin login
-* View all scanned advertisements
-* Review & approve/reject user reports
-* Clear dashboard data
-* Keyword trend analysis
+- Secure admin login
+- View all scanned advertisements
+- Review & approve/reject user reports
+- Clear dashboard data
+- Keyword trend analysis
 
-📸 *Screenshot:*
-`frontend/assets/screenshots/admin-dashboard.png`
+📸 _Screenshot:_
+`![Admin-Dashboard](image-3.png)`
 
 ---
 
 ### 📈 6. Keyword Trend Analysis
 
-* Extracts frequent keywords from verified fake ads
-* Identifies emerging scam patterns
-* Useful for cybersecurity research
+- Extracts frequent keywords from verified fake ads
+- Identifies emerging scam patterns
+- Useful for cybersecurity research
 
-📸 *Screenshot:*
-`frontend/assets/screenshots/keyword-analysis.png`
+📸 _Screenshot:_
+`![Keyword analysis](image-4.png)`
 
 ---
 
@@ -250,8 +249,8 @@ python train_model.py
 
 Generates:
 
-* `model.pkl`
-* `vectorizer.pkl`
+- `model.pkl`
+- `vectorizer.pkl`
 
 ---
 
@@ -273,8 +272,8 @@ http://127.0.0.1:5000
 
 Open any frontend file using:
 
-* VS Code Live Server **OR**
-* Double-click `frontend/index.html`
+- VS Code Live Server **OR**
+- Double-click `frontend/index.html`
 
 ---
 
@@ -303,12 +302,12 @@ Password: Subroto@123
 
 ## 🔮 Future Enhancements
 
-* Deep Learning (LSTM / BERT)
-* URL phishing detection
-* Image-based scam detection (OCR)
-* Cloud deployment (AWS / GCP)
-* User authentication
-* Continuous model retraining
+- Deep Learning (LSTM / BERT)
+- URL phishing detection
+- Image-based scam detection (OCR)
+- Cloud deployment (AWS / GCP)
+- User authentication
+- Continuous model retraining
 
 ---
 
@@ -323,5 +322,3 @@ Predictions are **probabilistic** and should not be treated as legal advice.
 
 **AdShield AI**
 Developed by **Subroto Raj**
-
-
