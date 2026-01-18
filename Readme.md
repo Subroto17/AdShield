@@ -79,7 +79,7 @@ With the rapid growth of online advertisements, scam activities have increased s
 - Combines **ML prediction + rule-based validation**
 
 📸 _Screenshot:_
-`![Scan Page](image.png)`
+![Scan Page](image.png)
 
 ---
 
@@ -93,7 +93,7 @@ With the rapid growth of online advertisements, scam activities have increased s
 - Pie chart visualization
 
 📸 _Screenshot:_
-`![Dashboard](image-1.png)`
+![Dashboard](image-1.png)
 
 ---
 
@@ -116,7 +116,7 @@ Automatically classifies ads into:
 - Helps improve system intelligence
 
 📸 _Screenshot:_
-`![Report-Scam](image-2.png)`
+![Report-Scam](image-2.png)
 
 ---
 
@@ -129,7 +129,7 @@ Automatically classifies ads into:
 - Keyword trend analysis
 
 📸 _Screenshot:_
-`![Admin-Dashboard](image-3.png)`
+![Admin-Dashboard](image-3.png)
 
 ---
 
@@ -140,7 +140,7 @@ Automatically classifies ads into:
 - Useful for cybersecurity research
 
 📸 _Screenshot:_
-`![Keyword analysis](image-4.png)`
+![Keyword analysis](image-4.png)
 
 ---
 
